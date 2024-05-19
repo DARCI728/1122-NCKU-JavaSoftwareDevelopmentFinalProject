@@ -86,5 +86,4 @@ public class Player extends Entity {
 
         g2d.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
     }
-
 }
