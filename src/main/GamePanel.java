@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import entity.Player;
+import object.SuperObject;
+import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
     // screen settings
@@ -13,22 +15,22 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 1;
 
     public final int tileSize = originalTitleSize * scale;
-    final int maxScreenCol = 32;
-    final int maxScreenRow = 20;
-    final int screenWidth = maxScreenCol * tileSize;
-    final int screenHeight = maxScreenRow * tileSize;
+    public final int maxScreenCol = 16;
+    public final int maxScreenRow = 10;
+    public final int screenWidth = maxScreenCol * tileSize;
+    public final int screenHeight = maxScreenRow * tileSize;
 
     // Game fps
     int fps = 60;
 
+    TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
-    Player player = new Player(this, keyH);
 
-    // Set player's default position
-    int playerX = 100;
-    int playerY = 100;
-    int playerSpeed = 4;
+    public CollisionChecker cChecker = new CollisionChecker(this);
+    public AssetSetter aSetter = new AssetSetter(this);
+    public Player player = new Player(this, keyH);
+    public SuperObject obj[] = new SuperObject[5];
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -36,6 +38,11 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+    }
+
+    public void setUpGame() {
+        aSetter.setObject();
+
     }
 
     public void startGameThread() {
@@ -49,7 +56,6 @@ public class GamePanel extends JPanel implements Runnable {
         long lastTime = System.nanoTime();
         long currentTime;
         long timmer = 0;
-        long drowCount = 0;
 
         while (gameThread != null) {
             currentTime = System.nanoTime();
@@ -62,12 +68,9 @@ public class GamePanel extends JPanel implements Runnable {
                 update();
                 repaint();
                 delta--;
-                drowCount++;
             }
 
             if (timmer >= 1000000000) {
-                System.out.println("FPS: " + drowCount);
-                drowCount = 0;
                 timmer = 0;
             }
         }
@@ -80,6 +83,14 @@ public class GamePanel extends JPanel implements Runnable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        tileM.draw(g2d);
+
+        for (SuperObject obj : obj) {
+            if (obj != null) {
+                obj.draw(g2d, this);
+            }
+        }
+
         player.draw(g2d);
         g2d.dispose();
     }
