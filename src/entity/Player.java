@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.UtilityTool;
 
 public class Player extends Entity {
     GamePanel gp;
@@ -16,6 +17,7 @@ public class Player extends Entity {
     int stopPosition = -1;
     boolean moving = false;
 
+    int step = 0;
     boolean hasSword = false;
 
     public Player(GamePanel gp, KeyHandler keyH) {
@@ -38,18 +40,28 @@ public class Player extends Entity {
     }
 
     public void getPlayerImage() {
+        up1 = setup("player_up_1");
+        up2 = setup("player_up_2");
+        down1 = setup("player_down_1");
+        down2 = setup("player_down_2");
+        left1 = setup("player_left_1");
+        left2 = setup("player_left_2");
+        right1 = setup("player_right_1");
+        right2 = setup("player_right_2");
+    }
+
+    public BufferedImage setup(String imageName) {
+        UtilityTool uTool = new UtilityTool();
+        BufferedImage scaleImage = null;
+
         try {
-            up1 = ImageIO.read(getClass().getResourceAsStream("/player/player_up_1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/player/player_up_2.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream("/player/player_down_1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/player/player_down_2.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/player/player_left_1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/player/player_left_2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/player/player_right_1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/player/player_right_2.png"));
+            scaleImage = ImageIO.read(getClass().getResourceAsStream("/player/" + imageName + ".png"));
+            scaleImage = uTool.scaleImage(scaleImage, gp.tileSize, gp.tileSize);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return scaleImage;
     }
 
     public void update() {
@@ -175,7 +187,6 @@ public class Player extends Entity {
                 case "Sword":
                     hasSword = true;
                     gp.obj[i] = null;
-                    System.out.println("Pick up sword");
                     break;
 
                 default:
@@ -231,6 +242,6 @@ public class Player extends Entity {
                 break;
         }
 
-        g2d.drawImage(image, worldX, worldY, gp.tileSize, gp.tileSize, null);
+        g2d.drawImage(image, worldX, worldY, null);
     }
 }

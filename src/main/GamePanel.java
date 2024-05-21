@@ -10,39 +10,50 @@ import object.SuperObject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
-    // screen settings
+    // Screen settings
     final int originalTitleSize = 48;
     final int scale = 1;
 
     public final int tileSize = originalTitleSize * scale;
-    public final int maxScreenCol = 16;
-    public final int maxScreenRow = 10;
+    public final int maxScreenCol = 17;
+    public final int maxScreenRow = 13;
     public final int screenWidth = maxScreenCol * tileSize;
     public final int screenHeight = maxScreenRow * tileSize;
 
-    // Game fps
+    // FPS
     int fps = 60;
 
-    TileManager tileM = new TileManager(this);
-    KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+    KeyHandler keyH = new KeyHandler(this);
+    TileManager tileM = new TileManager(this);
 
-    public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
+    public CollisionChecker cChecker = new CollisionChecker(this);
+    public UI ui = new UI(this);
+
+    // Entity and Object
     public Player player = new Player(this, keyH);
     public SuperObject obj[] = new SuperObject[5];
+
+    // Game State
+    public int gameState;
+    public final int menuState = 0;
+    public final int playState = 1;
+    public final int pauseState = 2;
+    public final int gameOverState = 3;
+    public final int dialogueState = 4;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
-        this.addKeyListener(keyH);
         this.setFocusable(true);
+        this.addKeyListener(keyH);
     }
 
     public void setUpGame() {
         aSetter.setObject();
-
+        gameState = menuState;
     }
 
     public void startGameThread() {
@@ -77,21 +88,40 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        player.update();
+        switch (gameState) {
+            case playState:
+                player.update();
+                break;
+
+            case pauseState:
+
+                break;
+
+            default:
+                break;
+        }
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        tileM.draw(g2d);
 
-        for (SuperObject obj : obj) {
-            if (obj != null) {
-                obj.draw(g2d, this);
+        if (gameState == menuState) {
+            ui.draw(g2d);
+        } else {
+            tileM.draw(g2d);
+
+            for (SuperObject obj : obj) {
+                if (obj != null) {
+                    obj.draw(g2d, this);
+                }
             }
+
+            player.draw(g2d);
+
+            ui.draw(g2d);
         }
 
-        player.draw(g2d);
         g2d.dispose();
     }
 }

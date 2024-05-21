@@ -5,13 +5,14 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import main.GamePanel;
+import main.UtilityTool;
 
 public class SuperObject {
 
+    public UtilityTool uTool = new UtilityTool();
     public BufferedImage image;
     public String name;
     public int worldX, worldY;
-
     public boolean collision = false;
 
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);

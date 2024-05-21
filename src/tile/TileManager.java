@@ -4,10 +4,10 @@ import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import main.UtilityTool;
 
 public class TileManager {
     GamePanel gp;
@@ -25,13 +25,19 @@ public class TileManager {
     }
 
     public void getTileImage() {
-        try {
-            for (int i = 0; i < 3; i++) {
-                tiles[i] = new Tile();
-                tiles[i].image = ImageIO.read(getClass().getResourceAsStream("/tiles/Outside_" + i + ".png"));
-            }
+        setUp(0, "Outside_0", false);
+        setUp(1, "Outside_1", false);
+        setUp(2, "Outside_2", true);
+    }
 
-            tiles[2].collision = true;
+    public void setUp(int index, String path, boolean collision) {
+        UtilityTool uTool = new UtilityTool();
+
+        try {
+            tiles[index] = new Tile();
+            tiles[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/" + path + ".png"));
+            tiles[index].image = uTool.scaleImage(tiles[index].image, gp.tileSize, gp.tileSize);
+            tiles[index].collision = collision;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,7 +83,7 @@ public class TileManager {
 
             int tileNum = mapTileNum[row][col];
 
-            g2d.drawImage(tiles[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);
+            g2d.drawImage(tiles[tileNum].image, x, y, null);
             col++;
             x += gp.tileSize;
 
