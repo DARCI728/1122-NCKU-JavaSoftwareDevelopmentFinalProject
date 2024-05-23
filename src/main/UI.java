@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -7,12 +8,16 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
 
-public class UI {
+import entity.Entity;
 
+public class UI {
     GamePanel gp;
     Graphics2D g2d;
     BufferedImage menuBackGround;
     Font hanyiSentyCrayon, silver;
+
+    public int slotCol = 0;
+    public int slotRow = 0;
 
     public Boolean messageOn = false;
     public String message = "";
@@ -29,7 +34,6 @@ public class UI {
 
         try {
             menuBackGround = ImageIO.read(getClass().getResourceAsStream("/backGround/WorldMap.png"));
-
             is = getClass().getResourceAsStream("/font/HanyiSentyCrayon.ttf");
             hanyiSentyCrayon = Font.createFont(Font.TRUETYPE_FONT, is);
             is = getClass().getResourceAsStream("/font/Silver.ttf");
@@ -56,7 +60,7 @@ public class UI {
         }
 
         if (gp.gameState == gp.playState) {
-
+            drawInventoryScreen();
         }
 
         if (gp.gameState == gp.pauseState) {
@@ -116,6 +120,39 @@ public class UI {
         }
     }
 
+    public void drawInventoryScreen() {
+        // FRAME
+        int frameWidth = gp.tileSize * 5 + 20 * 6;
+        int frameHeight = gp.tileSize * 1 + 20 * 2;
+        int frameX = (gp.screenWidth - frameWidth) / 2;
+        int frameY = gp.tileSize * 11;
+        drawSubWindow(frameX, frameY, frameWidth, frameHeight);
+
+        // SLOT
+        final int slotXstart = frameX + 20;
+        final int slotYstart = frameY + 20;
+        int slotX = slotXstart;
+        int slotY = slotYstart;
+
+        // DRAW PLAYER'S INVENTORY
+        for (Entity obj : gp.player.inventory) {
+            g2d.drawImage(obj.itemImage, slotX, slotY, null);
+            slotX += gp.tileSize;
+        }
+
+        // CURSOR
+        int cursorX = slotXstart + gp.tileSize * slotCol + 20 * slotCol;
+        int cursorY = slotYstart + gp.tileSize * slotRow;
+        int cursorWidth = gp.tileSize;
+        int cursorHeight = gp.tileSize;
+
+        // DRAW CURSOR
+        g2d.setColor(Color.WHITE);
+        g2d.setStroke(new BasicStroke(4));
+        g2d.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+
+    }
+
     public void drawPauseScreen() {
         String text = "PAUSED";
         g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 80f));
@@ -134,9 +171,14 @@ public class UI {
     }
 
     public void drawSubWindow(int x, int y, int width, int height) {
-        Color color = new Color(0, 0, 0, 128);
+        Color color = new Color(0, 0, 0, 200);
         g2d.setColor(color);
         g2d.fillRoundRect(x, y, width, height, 35, 35);
+
+        color = new Color(255, 255, 255, 255);
+        g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(4));
+        g2d.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 25, 25);
     }
 
     public int getCenteredX(String text) {
