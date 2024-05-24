@@ -5,8 +5,9 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
+
+import entity.Entity;
 import entity.Player;
-import object.SuperObject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -33,7 +34,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     // Entity and Object
     public Player player = new Player(this, keyH);
-    public SuperObject obj[] = new SuperObject[5];
+    public Entity obj[] = new Entity[10];
 
     // Game State
     public int gameState;
@@ -111,9 +112,9 @@ public class GamePanel extends JPanel implements Runnable {
         } else {
             tileM.draw(g2d);
 
-            for (SuperObject obj : obj) {
+            for (Entity obj : obj) {
                 if (obj != null) {
-                    obj.draw(g2d, this);
+                    obj.draw(g2d);
                 }
             }
 

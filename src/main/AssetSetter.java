@@ -1,6 +1,6 @@
 package main;
 
-import object.OBJ_Sword;
+import object.*;
 
 public class AssetSetter {
 
@@ -11,22 +11,8 @@ public class AssetSetter {
     }
 
     public void setObject() {
-
         gp.obj[0] = new OBJ_Sword(gp);
-        gp.obj[0].worldX = 5 * gp.tileSize;
-        gp.obj[0].worldY = 5 * gp.tileSize;
-
-        gp.obj[1] = new OBJ_Sword(gp);
-        gp.obj[1].worldX = 3 * gp.tileSize;
-        gp.obj[1].worldY = 1 * gp.tileSize;
-
-        gp.obj[2] = new OBJ_Sword(gp);
-        gp.obj[2].worldX = 3 * gp.tileSize;
-        gp.obj[2].worldY = 8 * gp.tileSize;
-
-        gp.obj[3] = new OBJ_Sword(gp);
-        gp.obj[3].worldX = 1 * gp.tileSize;
-        gp.obj[3].worldY = 5 * gp.tileSize;
+        gp.obj[0].worldX = 2 * gp.tileSize;
+        gp.obj[0].worldY = 2 * gp.tileSize;
     }
-
 }
