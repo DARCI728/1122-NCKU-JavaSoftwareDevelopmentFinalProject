@@ -60,9 +60,39 @@ public class MapGame {
         return false;
     }
 
-    private void foundSword(){
+    private void foundSword() {
         hasSword = true;
         System.out.println("You found a sword!");
+    }
+
+    private void attackMonsters() {
+        if (hasSword) {
+            // Check the four adjacent cells
+            if (playerX > 0 && map[playerX - 1][playerY] == 'M') {
+                map[playerX - 1][playerY] = '-';
+                monstersCount--;
+                step--;
+                System.out.println("You attacked a monster to the north and defeated it!");
+            }
+            if (playerX < map.length - 1 && map[playerX + 1][playerY] == 'M') {
+                map[playerX + 1][playerY] = '-';
+                monstersCount--;
+                step--;
+                System.out.println("You attacked a monster to the south and defeated it!");
+            }
+            if (playerY > 0 && map[playerX][playerY - 1] == 'M') {
+                map[playerX][playerY - 1] = '-';
+                monstersCount--;
+                step--;
+                System.out.println("You attacked a monster to the west and defeated it!");
+            }
+            if (playerY < map[0].length - 1 && map[playerX][playerY + 1] == 'M') {
+                map[playerX][playerY + 1] = '-';
+                monstersCount--;
+                step--;
+                System.out.println("You attacked a monster to the east and defeated it!");
+            }
+        }
     }
 
     public void movePlayer(char direction) {
@@ -109,8 +139,16 @@ public class MapGame {
             case 'r':
                 undoMove();
                 return;
+            case '1':
+                if (hasSword) {
+                    attackMonsters();
+                } else {
+                    System.out.println("You don't have a sword.");
+                    return;
+                }
+                break;
             default:
-                System.out.println("Invalid input! Please enter 'w', 'a', 's', 'd', or 'r'.");
+                System.out.println("Invalid input! Please enter 'w', 'a', 's', 'd','1' or 'r'.");
                 return;
         }
 
