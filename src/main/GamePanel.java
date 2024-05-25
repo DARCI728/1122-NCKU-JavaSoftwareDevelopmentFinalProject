@@ -94,10 +94,6 @@ public class GamePanel extends JPanel implements Runnable {
                 player.update();
                 break;
 
-            case pauseState:
-
-                break;
-
             default:
                 break;
         }

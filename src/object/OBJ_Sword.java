@@ -13,14 +13,14 @@ public class OBJ_Sword extends Entity {
 
         type = "object";
         name = "Sword";
-        itemImage = setUpImage("/objects/sword.png");
-        
+        itemImage1 = setUpImage("/objects/sword.png");
+
         solidArea = new Rectangle(0, 0, 48, 48);
         solidAreaDefaultX = 0;
         solidAreaDefaultY = 0;
     }
 
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(itemImage, worldX, worldY, gp.tileSize, gp.tileSize, null);
+        g2d.drawImage(itemImage1, worldX, worldY, gp.tileSize, gp.tileSize, null);
     }
 }

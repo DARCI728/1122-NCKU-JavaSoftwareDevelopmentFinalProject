@@ -1,14 +1,12 @@
 package entity;
 
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.UtilityTool;
-
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
 
 public class Entity {
 
@@ -30,7 +28,7 @@ public class Entity {
     public boolean collisionOn = false;
 
     // Objects
-    public BufferedImage itemImage;
+    public BufferedImage itemImage1, itemImage2;
     public String name;
     public boolean collision = false;
 

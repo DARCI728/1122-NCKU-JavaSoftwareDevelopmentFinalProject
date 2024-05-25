@@ -136,7 +136,7 @@ public class UI {
 
         // DRAW PLAYER'S INVENTORY
         for (Entity obj : gp.player.inventory) {
-            g2d.drawImage(obj.itemImage, slotX, slotY, null);
+            g2d.drawImage(obj.itemImage1, slotX, slotY, null);
             slotX += gp.tileSize;
         }
 
