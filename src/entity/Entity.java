@@ -11,38 +11,36 @@ import main.UtilityTool;
 public class Entity {
 
     public GamePanel gp;
-
+    public String name;
     public String type;
-
     public int worldX, worldY;
 
+    // Collision
     public Rectangle solidArea;
     public int solidAreaDefaultX, solidAreaDefaultY;
+    public boolean collision = false;
 
     // Player
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public String direction = "down";
-    public int speed;
+    public int speed = 4;
     public int spriteCounter = 0;
     public int spriteNun = 1;
     public boolean collisionOn = false;
 
+    // Monster
+    public BufferedImage mobImage;
+    public int maxLife;
+    public int life;
+
     // Objects
     public BufferedImage itemImage1, itemImage2;
-    public String name;
-    public boolean collision = false;
 
     public Entity(GamePanel gp) {
         this.gp = gp;
     }
 
-    public void update() {
-    }
-
-    public void draw(Graphics2D g2d) {
-    }
-
-    public BufferedImage setUpImage(String path) {
+    public BufferedImage getImage(String path) {
         UtilityTool uTool = new UtilityTool();
         BufferedImage scaleImage = null;
 
@@ -54,5 +52,11 @@ public class Entity {
         }
 
         return scaleImage;
+    }
+
+    public void update() {
+    }
+
+    public void draw(Graphics2D g2d) {
     }
 }

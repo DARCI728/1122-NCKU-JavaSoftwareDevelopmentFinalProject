@@ -11,9 +11,8 @@ public class OBJ_Sword extends Entity {
     public OBJ_Sword(GamePanel gp) {
         super(gp);
 
-        type = "object";
         name = "Sword";
-        itemImage1 = setUpImage("/objects/sword.png");
+        itemImage1 = getImage("/objects/sword.png");
 
         solidArea = new Rectangle(0, 0, 48, 48);
         solidAreaDefaultX = 0;

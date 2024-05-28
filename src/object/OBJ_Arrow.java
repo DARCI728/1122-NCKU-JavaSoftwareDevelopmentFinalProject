@@ -10,6 +10,6 @@ public class OBJ_Arrow extends Entity {
 
         type = "object";
         name = "arrow";
-        itemImage1 = setUpImage("/objects/sword.png");
+        itemImage1 = getImage("/objects/sword.png");
     }
 }

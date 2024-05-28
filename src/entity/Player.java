@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 import main.GamePanel;
 import main.KeyHandler;
-import object.OBJ_Boots;
+import object.*;
 
 public class Player extends Entity {
 
@@ -23,72 +23,27 @@ public class Player extends Entity {
         super(gp);
         this.keyH = keyH;
 
-        type = "player";
         worldX = gp.tileSize;
         worldY = gp.tileSize;
-        speed = 4;
-        direction = "down";
 
         solidArea = new Rectangle(4, 4, 40, 40);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        inventory.add(new OBJ_Boots(gp));
+        inventory.add(new OBJ_gloves(gp));
 
         getPlayerImage();
     }
 
     public void getPlayerImage() {
-        up1 = setUpImage("/player/player_up_1.png");
-        up2 = setUpImage("/player/player_up_2.png");
-        down1 = setUpImage("/player/player_down_1.png");
-        down2 = setUpImage("/player/player_down_2.png");
-        left1 = setUpImage("/player/player_left_1.png");
-        left2 = setUpImage("/player/player_left_2.png");
-        right1 = setUpImage("/player/player_right_1.png");
-        right2 = setUpImage("/player/player_right_2.png");
-    }
-
-    public int pickUpObject(int i, int originaStopPosition) {
-
-        int stopPosition = -1;
-
-        if (i != -1) {
-            String objectName = gp.obj[i].name;
-
-            switch (direction) {
-                case "up":
-                    stopPosition = gp.obj[i].worldY;
-                    break;
-
-                case "down":
-                    stopPosition = gp.obj[i].worldY;
-                    break;
-
-                case "left":
-                    stopPosition = gp.obj[i].worldX;
-                    break;
-
-                case "right":
-                    stopPosition = gp.obj[i].worldX;
-                    break;
-            }
-
-            switch (objectName) {
-                case "Sword":
-                    gp.obj[i] = null;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        if (originaStopPosition != -1) {
-            stopPosition = originaStopPosition;
-        }
-
-        return stopPosition;
+        up1 = getImage("/player/player_up_1.png");
+        up2 = getImage("/player/player_up_2.png");
+        down1 = getImage("/player/player_down_1.png");
+        down2 = getImage("/player/player_down_2.png");
+        left1 = getImage("/player/player_left_1.png");
+        left2 = getImage("/player/player_left_2.png");
+        right1 = getImage("/player/player_right_1.png");
+        right2 = getImage("/player/player_right_2.png");
     }
 
     public void update() {
@@ -112,16 +67,18 @@ public class Player extends Entity {
 
             moving = true;
 
-            // Collision check
+            // CHECK TILE COLLISION
             collisionOn = false;
             gp.cChecker.checkTile(this);
 
-            // Check object collision
+            // CHECK MOB COLLISION
+            int mobIndex = gp.cChecker.checkEntity(this, gp.mob);
+
+            // CHECK OBJ COLLISION
             int objIndex = gp.cChecker.checkObject(this, true);
             stopPosition = pickUpObject(objIndex, stopPosition);
 
             if (stopPosition != -1) {
-
                 switch (direction) {
                     case "up":
                         if (worldY - speed < stopPosition) {
@@ -183,6 +140,63 @@ public class Player extends Entity {
                 spriteCounter = 0;
             }
         }
+    }
+
+    public int pickUpObject(int i, int originaStopPosition) {
+
+        int stopPosition = -1;
+
+        if (i != -1) {
+            String objectName = gp.obj[i].name;
+
+            switch (direction) {
+                case "up":
+                    stopPosition = gp.obj[i].worldY;
+                    break;
+
+                case "down":
+                    stopPosition = gp.obj[i].worldY;
+                    break;
+
+                case "left":
+                    stopPosition = gp.obj[i].worldX;
+                    break;
+
+                case "right":
+                    stopPosition = gp.obj[i].worldX;
+                    break;
+            }
+
+            switch (objectName) {
+                case "Sword":
+                    gp.obj[i] = null;
+                    if (inventory.size() == 1) {
+                        inventory.add(new OBJ_Sword(gp));
+                    } else {
+                        inventory.set(1, new OBJ_Sword(gp));
+                    }
+                    break;
+
+                case "Bow":
+                    gp.obj[i] = null;
+                    if (inventory.size() == 1) {
+                        inventory.add(new OBJ_Null(gp));
+                        inventory.add(new OBJ_Bow(gp));
+                    } else {
+                        inventory.add(new OBJ_Bow(gp));
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        if (originaStopPosition != -1) {
+            stopPosition = originaStopPosition;
+        }
+
+        return stopPosition;
     }
 
     public void draw(Graphics2D g2d) {

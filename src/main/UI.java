@@ -137,7 +137,7 @@ public class UI {
         // DRAW PLAYER'S INVENTORY
         for (Entity obj : gp.player.inventory) {
             g2d.drawImage(obj.itemImage1, slotX, slotY, null);
-            slotX += gp.tileSize;
+            slotX += gp.tileSize + 20;
         }
 
         // CURSOR
@@ -150,7 +150,6 @@ public class UI {
         g2d.setColor(Color.WHITE);
         g2d.setStroke(new BasicStroke(4));
         g2d.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
-
     }
 
     public void drawPauseScreen() {

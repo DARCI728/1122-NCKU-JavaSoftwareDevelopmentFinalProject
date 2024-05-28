@@ -1,13 +1,15 @@
 package main;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.swing.JPanel;
 
-import entity.Entity;
-import entity.Player;
+import entity.*;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -24,17 +26,19 @@ public class GamePanel extends JPanel implements Runnable {
     // FPS
     int fps = 60;
 
+    // System settings
     Thread gameThread;
-    KeyHandler keyH = new KeyHandler(this);
     TileManager tileM = new TileManager(this);
-
     public AssetSetter aSetter = new AssetSetter(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
+    public KeyHandler keyH = new KeyHandler(this);
     public UI ui = new UI(this);
 
-    // Entity and Object
+    // Entity
     public Player player = new Player(this, keyH);
     public Entity obj[] = new Entity[10];
+    public Entity mob[] = new Entity[10];
+    ArrayList<Entity> entityList = new ArrayList<Entity>();
 
     // Game State
     public int gameState;
@@ -53,6 +57,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void setUpGame() {
+        aSetter.setMonster();
         aSetter.setObject();
         gameState = menuState;
     }
@@ -103,21 +108,39 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        if (gameState == menuState) {
-            ui.draw(g2d);
-        } else {
+        if (gameState != menuState) {
             tileM.draw(g2d);
 
-            for (Entity obj : obj) {
-                if (obj != null) {
-                    obj.draw(g2d);
+            entityList.add(player);
+
+            for (Entity mob : mob) {
+                if (mob != null) {
+                    entityList.add(mob);
                 }
             }
 
-            player.draw(g2d);
+            for (Entity obj : obj) {
+                if (obj != null) {
+                    entityList.add(obj);
+                }
+            }
 
-            ui.draw(g2d);
+            Collections.sort(entityList, new Comparator<Entity>() {
+
+                public int compare(Entity e1, Entity e2) {
+                    int result = Integer.compare(e1.worldY, e2.worldY);
+                    return result;
+                }
+            });
+
+            for (int i = 0; i < entityList.size(); i++) {
+                entityList.get(i).draw(g2d);
+            }
+
+            entityList.clear();
         }
+
+        ui.draw(g2d);
 
         g2d.dispose();
     }
