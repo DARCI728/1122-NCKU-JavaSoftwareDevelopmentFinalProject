@@ -57,7 +57,6 @@ public class TileManager {
                     int num = Integer.parseInt(numbers[col]);
                     if (num == 1) {
                         tiles[row * gp.maxScreenCol + col].collision = true;
-                        System.out.println((row * gp.maxScreenCol + col) + " collision on");
                     }
                     col++;
                 }
