@@ -10,45 +10,61 @@ import main.KeyHandler;
 import object.*;
 
 public class Player extends Entity {
-
     KeyHandler keyH;
 
     int stopPosition = -1;
     boolean moving = false;
 
-    public Entity currentEquipment;
     public ArrayList<Entity> inventory = new ArrayList<Entity>();
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
         this.keyH = keyH;
 
-        worldX = gp.tileSize;
-        worldY = gp.tileSize;
-
+        worldX = gp.tileSize * 9;
+        worldY = gp.tileSize * 9;
         solidArea = new Rectangle(4, 4, 40, 40);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
         inventory.add(new OBJ_gloves(gp));
 
+        atkArea = new Rectangle(0, 0, 48, 48);
+
         getPlayerImage();
+        getPlayerAttackImage();
     }
 
     public void getPlayerImage() {
-        up1 = getImage("/player/player_up_1.png");
-        up2 = getImage("/player/player_up_2.png");
-        down1 = getImage("/player/player_down_1.png");
-        down2 = getImage("/player/player_down_2.png");
-        left1 = getImage("/player/player_left_1.png");
-        left2 = getImage("/player/player_left_2.png");
-        right1 = getImage("/player/player_right_1.png");
-        right2 = getImage("/player/player_right_2.png");
+        up1 = getImage("/player/player_up_1.png", gp.tileSize, gp.tileSize);
+        up2 = getImage("/player/player_up_2.png", gp.tileSize, gp.tileSize);
+        down1 = getImage("/player/player_down_1.png", gp.tileSize, gp.tileSize);
+        down2 = getImage("/player/player_down_2.png", gp.tileSize, gp.tileSize);
+        left1 = getImage("/player/player_left_1.png", gp.tileSize, gp.tileSize);
+        left2 = getImage("/player/player_left_2.png", gp.tileSize, gp.tileSize);
+        right1 = getImage("/player/player_right_1.png", gp.tileSize, gp.tileSize);
+        right2 = getImage("/player/player_right_2.png", gp.tileSize, gp.tileSize);
+    }
+
+    public void getPlayerAttackImage() {
+        atkUp1 = getImage("/player/player_attack_up_1.png", gp.tileSize, gp.tileSize * 2);
+        atkUp2 = getImage("/player/player_attack_up_2.png", gp.tileSize, gp.tileSize * 2);
+        atkDown1 = getImage("/player/player_attack_down_1.png", gp.tileSize, gp.tileSize * 2);
+        atkDown2 = getImage("/player/player_attack_down_2.png", gp.tileSize, gp.tileSize * 2);
+        atkLeft1 = getImage("/player/player_attack_left_1.png", gp.tileSize * 2, gp.tileSize);
+        atkLeft2 = getImage("/player/player_attack_left_2.png", gp.tileSize * 2, gp.tileSize);
+        atkRight1 = getImage("/player/player_attack_right_1.png", gp.tileSize * 2, gp.tileSize);
+        attackRight2 = getImage("/player/player_attack_right_2.png", gp.tileSize * 2, gp.tileSize);
     }
 
     public void update() {
+
+        if (attacking == true) {
+            attacking();
+        }
+
         if ((keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true
-                || keyH.rightPressed == true) || keyH.move == true) {
+                || keyH.rightPressed == true) || keyH.move == true && attacking == false) {
 
             if (moving == false) {
                 if (keyH.upPressed == true) {
@@ -142,8 +158,72 @@ public class Player extends Entity {
         }
     }
 
-    public int pickUpObject(int i, int originaStopPosition) {
+    public void attacking() {
+        spriteCounter++;
 
+        if (spriteCounter <= 5) {
+            spriteNun = 1;
+        }
+
+        if (spriteCounter > 5 && spriteCounter <= 25) {
+            spriteNun = 2;
+
+            int currentWorldX = worldX;
+            int currentWorldY = worldY;
+            int solidAreaWidth = solidArea.width;
+            int solidAreaHeight = solidArea.height;
+
+            switch (direction) {
+                case "up":
+                    worldY -= atkArea.height;
+                    break;
+
+                case "down":
+                    worldY += atkArea.height;
+                    break;
+
+                case "left":
+                    worldX -= atkArea.width;
+                    break;
+
+                case "right":
+                    worldX += atkArea.width;
+                    break;
+            }
+
+            solidArea.width = atkArea.width;
+            solidArea.height = atkArea.height;
+
+            int mobIndex = gp.cChecker.checkEntity(this, gp.mob);
+            damageMonster(mobIndex);
+
+            worldX = currentWorldX;
+            worldY = currentWorldY;
+            solidArea.width = solidAreaWidth;
+            solidArea.height = solidAreaHeight;
+        }
+
+        if (spriteCounter > 25) {
+            spriteNun = 1;
+            spriteCounter = 0;
+            attacking = false;
+        }
+    }
+
+    public void damageMonster(int i) {
+        if (i != -1) {
+            if (gp.mob[i].invincible == false) {
+                gp.mob[i].invincible = true;
+                gp.mob[i].life -= 1;
+
+                if (gp.mob[i].life <= 0) {
+                    gp.mob[i].dying = true;
+                }
+            }
+        }
+    }
+
+    public int pickUpObject(int i, int originaStopPosition) {
         int stopPosition = -1;
 
         if (i != -1) {
@@ -201,45 +281,97 @@ public class Player extends Entity {
 
     public void draw(Graphics2D g2d) {
         BufferedImage image = null;
+        int tempScreenX = worldX;
+        int tempScreenY = worldY;
 
         switch (direction) {
             case "up":
-                if (spriteNun == 1) {
-                    image = up1;
+                if (attacking == true) {
+                    tempScreenY = worldY - gp.tileSize;
+                    if (spriteNun == 1) {
+                        image = atkUp1;
+                    }
+                    if (spriteNun == 2) {
+                        image = atkUp2;
+                    }
                 }
-                if (spriteNun == 2) {
-                    image = up2;
+
+                if (attacking == false) {
+                    if (spriteNun == 1) {
+                        image = up1;
+                    }
+                    if (spriteNun == 2) {
+                        image = up2;
+                    }
                 }
+
                 break;
 
             case "down":
-                if (spriteNun == 1) {
-                    image = down1;
+                if (attacking == true) {
+                    if (spriteNun == 1) {
+                        image = atkDown1;
+                    }
+                    if (spriteNun == 2) {
+                        image = atkDown2;
+                    }
                 }
-                if (spriteNun == 2) {
-                    image = down2;
+
+                if (attacking == false) {
+                    if (spriteNun == 1) {
+                        image = down1;
+                    }
+                    if (spriteNun == 2) {
+                        image = down2;
+                    }
                 }
+
                 break;
 
             case "left":
-                if (spriteNun == 1) {
-                    image = left1;
+                if (attacking == true) {
+                    tempScreenX = worldX - gp.tileSize;
+                    if (spriteNun == 1) {
+                        image = atkLeft1;
+                    }
+                    if (spriteNun == 2) {
+                        image = atkLeft2;
+                    }
                 }
-                if (spriteNun == 2) {
-                    image = left2;
+
+                if (attacking == false) {
+                    if (spriteNun == 1) {
+                        image = left1;
+                    }
+                    if (spriteNun == 2) {
+                        image = left2;
+                    }
                 }
+
                 break;
 
             case "right":
-                if (spriteNun == 1) {
-                    image = right1;
+                if (attacking == true) {
+                    if (spriteNun == 1) {
+                        image = atkRight1;
+                    }
+                    if (spriteNun == 2) {
+                        image = attackRight2;
+                    }
                 }
-                if (spriteNun == 2) {
-                    image = right2;
+
+                if (attacking == false) {
+                    if (spriteNun == 1) {
+                        image = right1;
+                    }
+                    if (spriteNun == 2) {
+                        image = right2;
+                    }
                 }
+
                 break;
         }
 
-        g2d.drawImage(image, worldX, worldY, null);
+        g2d.drawImage(image, tempScreenX, tempScreenY, null);
     }
 }

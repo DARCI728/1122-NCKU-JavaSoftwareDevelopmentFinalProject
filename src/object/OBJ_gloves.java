@@ -9,6 +9,6 @@ public class OBJ_gloves extends Entity {
         super(gp);
 
         name = "Gloves";
-        itemImage1 = getImage("/objects/gloves.png");
+        itemImage1 = getImage("/objects/gloves.png", gp.tileSize, gp.tileSize);
     }
 }

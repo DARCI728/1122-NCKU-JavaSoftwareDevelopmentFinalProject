@@ -12,7 +12,7 @@ public class OBJ_Sword extends Entity {
         super(gp);
 
         name = "Sword";
-        itemImage1 = getImage("/objects/sword.png");
+        itemImage1 = getImage("/objects/sword.png", gp.tileSize, gp.tileSize);
 
         solidArea = new Rectangle(0, 0, 48, 48);
         solidAreaDefaultX = 0;

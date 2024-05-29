@@ -1,5 +1,6 @@
 package monster;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
@@ -19,10 +20,19 @@ public class MOB_Slime extends Entity {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        mobImage = getImage("/monsters/monster_2.png");
+        mobImage = getImage("/monsters/monster_2.png", gp.tileSize, gp.tileSize);
     }
 
     public void draw(Graphics2D g2d) {
+
+        if (invincible == true) {
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+        }
+
+        if (dying == true) {
+            dyingAnimation(g2d);
+        }
+
         g2d.drawImage(mobImage, worldX, worldY, gp.tileSize, gp.tileSize, null);
     }
 }

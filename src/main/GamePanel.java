@@ -14,8 +14,8 @@ import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
     // Screen settings
-    final int originalTitleSize = 48;
-    final int scale = 1;
+    final int originalTitleSize = 24;
+    final int scale = 2;
 
     public final int tileSize = originalTitleSize * scale;
     public final int maxScreenCol = 17;
@@ -97,6 +97,14 @@ public class GamePanel extends JPanel implements Runnable {
         switch (gameState) {
             case playState:
                 player.update();
+
+                for (int i = 0; i < mob.length; i++) {
+                    if (mob[i] != null) {
+                        if (mob[i].alive == false) {
+                            mob[i] = null;
+                        }
+                    }
+                }
                 break;
 
             default:

@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -50,6 +51,8 @@ public class UI {
 
     public void draw(Graphics2D g2d) {
         this.g2d = g2d;
+
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 
         g2d.setFont(hanyiSentyCrayon);
         g2d.setColor(Color.WHITE);

@@ -82,23 +82,74 @@ public class KeyHandler implements KeyListener {
 
     public void playState(int code) {
         if (code == KeyEvent.VK_W) {
-            upPressed = true;
-            move = true;
+            switch (gp.ui.slotCol) {
+                case 0:
+                    upPressed = true;
+                    move = true;
+                    break;
+
+                case 1:
+                    gp.player.direction = "up";
+                    gp.player.attacking = true;
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         if (code == KeyEvent.VK_S) {
-            downPressed = true;
-            move = true;
+            switch (gp.ui.slotCol) {
+                case 0:
+                    downPressed = true;
+                    move = true;
+                    break;
+
+                case 1:
+                    gp.player.direction = "down";
+                    gp.player.attacking = true;
+                    break;
+
+                default:
+                    break;
+            }
+
         }
 
         if (code == KeyEvent.VK_A) {
-            leftPressed = true;
-            move = true;
+            switch (gp.ui.slotCol) {
+                case 0:
+                    leftPressed = true;
+                    move = true;
+                    break;
+
+                case 1:
+                    gp.player.direction = "left";
+                    gp.player.attacking = true;
+                    break;
+
+                default:
+                    break;
+            }
+
         }
 
         if (code == KeyEvent.VK_D) {
-            rightPressed = true;
-            move = true;
+            switch (gp.ui.slotCol) {
+                case 0:
+                    rightPressed = true;
+                    move = true;
+                    break;
+
+                case 1:
+                    gp.player.direction = "right";
+                    gp.player.attacking = true;
+                    break;
+
+                default:
+                    break;
+            }
+
         }
 
         if (code == KeyEvent.VK_1) {

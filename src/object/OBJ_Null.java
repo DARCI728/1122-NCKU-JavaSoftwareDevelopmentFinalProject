@@ -9,6 +9,6 @@ public class OBJ_Null extends Entity {
         super(gp);
 
         name = "Null";
-        itemImage1 = getImage("/objects/null.png");
+        itemImage1 = getImage("/objects/null.png", gp.tileSize, gp.tileSize);
     }
 }
