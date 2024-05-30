@@ -27,6 +27,14 @@ public class KeyHandler implements KeyListener {
         if (gp.gameState == gp.playState) {
             playState(code);
         }
+
+        if (gp.gameState == gp.dialogueState) {
+            dialogueState(code);
+        }
+
+        if (gp.gameState == gp.gameOverState) {
+            gameOverState(code);
+        }
     }
 
     public void keyReleased(java.awt.event.KeyEvent e) {
@@ -179,6 +187,48 @@ public class KeyHandler implements KeyListener {
                 gp.gameState = gp.playState;
             }
         }
+
+        if (code == KeyEvent.VK_R) {
+            gp.retry();
+            gp.gameState = gp.playState;
+        }
     }
 
+    public void dialogueState(int code) {
+        if (code == KeyEvent.VK_ENTER) {
+            gp.gameState = gp.playState;
+        }
+    }
+
+    public void gameOverState(int code) {
+        if (code == KeyEvent.VK_W) {
+            gp.ui.commandNum--;
+            if (gp.ui.commandNum < 0) {
+                gp.ui.commandNum = 1;
+            }
+        }
+
+        if (code == KeyEvent.VK_S) {
+            gp.ui.commandNum++;
+            if (gp.ui.commandNum > 1) {
+                gp.ui.commandNum = 0;
+            }
+        }
+
+        if (code == KeyEvent.VK_ENTER) {
+            switch (gp.ui.commandNum) {
+                case 0:
+                    gp.retry();
+                    gp.gameState = gp.playState;
+                    break;
+
+                case 1:
+                    System.exit(0);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
 }

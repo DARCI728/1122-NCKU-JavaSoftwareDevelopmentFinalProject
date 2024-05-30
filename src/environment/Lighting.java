@@ -1,5 +1,6 @@
 package environment;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
@@ -52,6 +53,7 @@ public class Lighting {
     }
 
     public void draw(Graphics2D g2d) {
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         g2d.drawImage(darknessFilter, 0, 0, null);
     }
 }

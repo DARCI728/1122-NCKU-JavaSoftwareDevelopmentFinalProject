@@ -28,7 +28,7 @@ public class CollisionChecker {
                 entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;
                 tileNum1 = entityTopRow * gp.maxScreenCol + entityLeftCol;
                 tileNum2 = entityTopRow * gp.maxScreenCol + entityRightCol;
-                if (gp.tileM.tiles[tileNum1].collision == true || gp.tileM.tiles[tileNum2].collision == true) {
+                if (gp.tileM.tiles[gp.currentMap][tileNum1].collision == true || gp.tileM.tiles[gp.currentMap][tileNum2].collision == true) {
                     entity.collisionOn = true;
                 }
                 break;
@@ -37,7 +37,7 @@ public class CollisionChecker {
                 entityBottomRow = (entityBottomWorldY + entity.speed) / gp.tileSize;
                 tileNum1 = entityBottomRow * gp.maxScreenCol + entityLeftCol;
                 tileNum2 = entityBottomRow * gp.maxScreenCol + entityRightCol;
-                if (gp.tileM.tiles[tileNum1].collision == true || gp.tileM.tiles[tileNum2].collision == true) {
+                if (gp.tileM.tiles[gp.currentMap][tileNum1].collision == true || gp.tileM.tiles[gp.currentMap][tileNum2].collision == true) {
                     entity.collisionOn = true;
                 }
                 break;
@@ -46,7 +46,7 @@ public class CollisionChecker {
                 entityLeftCol = (entityLeftWorldX - entity.speed) / gp.tileSize;
                 tileNum1 = entityTopRow * gp.maxScreenCol + entityLeftCol;
                 tileNum2 = entityBottomRow * gp.maxScreenCol + entityLeftCol;
-                if (gp.tileM.tiles[tileNum1].collision == true || gp.tileM.tiles[tileNum2].collision == true) {
+                if (gp.tileM.tiles[gp.currentMap][tileNum1].collision == true || gp.tileM.tiles[gp.currentMap][tileNum2].collision == true) {
                     entity.collisionOn = true;
                 }
                 break;
@@ -55,7 +55,7 @@ public class CollisionChecker {
                 entityRightCol = (entityRightWorldX + entity.speed) / gp.tileSize;
                 tileNum1 = entityTopRow * gp.maxScreenCol + entityRightCol;
                 tileNum2 = entityBottomRow * gp.maxScreenCol + entityRightCol;
-                if (gp.tileM.tiles[tileNum1].collision == true || gp.tileM.tiles[tileNum2].collision == true) {
+                if (gp.tileM.tiles[gp.currentMap][tileNum1].collision == true || gp.tileM.tiles[gp.currentMap][tileNum2].collision == true) {
                     entity.collisionOn = true;
                 }
                 break;

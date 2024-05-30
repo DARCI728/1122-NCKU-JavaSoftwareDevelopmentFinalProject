@@ -33,6 +33,7 @@ public class GamePanel extends JPanel implements Runnable {
     EnvironmentManager envM = new EnvironmentManager(this);
     public AssetSetter aSetter = new AssetSetter(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
+    public EventHander eventH = new EventHander(this);
     public KeyHandler keyH = new KeyHandler(this);
     public UI ui = new UI(this);
 
@@ -42,13 +43,17 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity mob[] = new Entity[10];
     ArrayList<Entity> entityList = new ArrayList<Entity>();
 
+    // Maps
+    public final int maxMap = 10;
+    public int currentMap = 0;
+
     // Game State
     public int gameState;
     public final int menuState = 0;
     public final int playState = 1;
-    public final int pauseState = 2;
-    public final int gameOverState = 3;
-    public final int dialogueState = 4;
+    public final int dialogueState = 2;
+    public final int pauseState = 3;
+    public final int gameOverState = 4;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -63,6 +68,16 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setObject();
         envM.setUpEnvironment();
         gameState = menuState;
+    }
+
+    public void retry() {
+        obj = new Entity[10];
+        mob = new Entity[10];
+        entityList.clear();
+        aSetter.setMonster();
+        aSetter.setObject();
+        eventH = new EventHander(this);
+        player.setDefaultValue();
     }
 
     public void startGameThread() {
@@ -108,6 +123,43 @@ public class GamePanel extends JPanel implements Runnable {
                         }
                     }
                 }
+
+                int mobCnt = 0;
+
+                for (int i = 0; i < mob.length; i++) {
+                    if (mob[i] != null) {
+                        mobCnt++;
+                    }
+                }
+
+                if (mobCnt == 0) {
+                    switch (currentMap) {
+                        case 0:
+                            tileM.tiles[0][93].collision = false;
+                            break;
+
+                        case 1:
+                            tileM.tiles[1][96].collision = false;
+                            break;
+
+                        default:
+                            break;
+                    }
+                } else {
+                    switch (currentMap) {
+                        case 0:
+                            tileM.tiles[0][93].collision = true;
+                            break;
+
+                        case 1:
+                            tileM.tiles[1][96].collision = true;
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
                 break;
 
             default:
@@ -120,7 +172,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2d = (Graphics2D) g;
 
         if (gameState != menuState) {
-            tileM.draw(g2d);
+            tileM.draw(g2d, currentMap);
 
             entityList.add(player);
 
@@ -149,7 +201,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             entityList.clear();
-            
+
             envM.draw(g2d);
         }
 

@@ -21,9 +21,10 @@ public class Player extends Entity {
         super(gp);
         this.keyH = keyH;
 
-        worldX = gp.tileSize * 9;
-        worldY = gp.tileSize * 9;
-        solidArea = new Rectangle(4, 4, 40, 40);
+        maxLife = 1;
+        life = maxLife;
+
+        solidArea = new Rectangle(5, 5, 38, 38);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
@@ -33,6 +34,7 @@ public class Player extends Entity {
 
         getPlayerImage();
         getPlayerAttackImage();
+        setDefaultValue();
     }
 
     public void getPlayerImage() {
@@ -57,7 +59,32 @@ public class Player extends Entity {
         attackRight2 = getImage("/player/player_attack_right_2.png", gp.tileSize * 2, gp.tileSize);
     }
 
+    public void setDefaultValue() {
+        switch (gp.currentMap) {
+            case 0:
+                worldX = gp.tileSize * 9;
+                worldY = gp.tileSize * 9;
+                break;
+
+            case 1:
+                worldX = gp.tileSize * 11;
+                worldY = gp.tileSize * 10;
+                break;
+
+            default:
+                break;
+        }
+
+        life = maxLife;
+        direction = "down";
+        inventory.clear();
+        inventory.add(new OBJ_gloves(gp));
+    }
+
     public void update() {
+        if (life <= 0) {
+            gp.gameState = gp.gameOverState;
+        }
 
         if (attacking == true) {
             attacking();
@@ -94,6 +121,9 @@ public class Player extends Entity {
             // CHECK OBJ COLLISION
             int objIndex = gp.cChecker.checkObject(this, true);
             stopPosition = pickUpObject(objIndex, stopPosition);
+
+            // CHECK EVENT
+            gp.eventH.checkEvent();
 
             if (stopPosition != -1) {
                 switch (direction) {

@@ -11,39 +11,41 @@ import main.UtilityTool;
 
 public class TileManager {
     GamePanel gp;
-    public Tile[] tiles;
+    public Tile[][] tiles;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
-        tiles = new Tile[250];
+        tiles = new Tile[gp.maxMap][250];
 
-        setUpTile();
+        setUpTile("/tiles/map_1/map_01_", 0);
+        loadCollision("/maps/map_1.txt", 0);
+
+        setUpTile("/tiles/map_2/map_2_", 1);
+        loadCollision("/maps/map_2.txt", 1);
     }
 
-    public void setUpTile() {
+    public void setUpTile(String path, int mapNum) {
         for (int i = 0; i < gp.maxScreenCol * gp.maxScreenRow; i++) {
-            getTileImage(i, "map_01_" + (i + 1));
+            getTileImage(path + (i + 1) + ".png", i, mapNum);
         }
-        
-        loadCollision("/maps/map_1.txt");
     }
 
-    public void getTileImage(int index, String path) {
+    public void getTileImage(String path, int index, int mapNum) {
         UtilityTool uTool = new UtilityTool();
 
         try {
-            tiles[index] = new Tile();
-            tiles[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/map_01/" + path + ".png"));
-            tiles[index].image = uTool.scaleImage(tiles[index].image, gp.tileSize, gp.tileSize);
+            tiles[mapNum][index] = new Tile();
+            tiles[mapNum][index].image = ImageIO.read(getClass().getResourceAsStream(path));
+            tiles[mapNum][index].image = uTool.scaleImage(tiles[mapNum][index].image, gp.tileSize, gp.tileSize);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void loadCollision(String filePath) {
+    public void loadCollision(String path, int mapNum) {
         try {
-            InputStream is = getClass().getResourceAsStream(filePath);
+            InputStream is = getClass().getResourceAsStream(path);
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
             int col = 0;
@@ -56,7 +58,7 @@ public class TileManager {
                     String numbers[] = line.split(" ");
                     int num = Integer.parseInt(numbers[col]);
                     if (num == 1) {
-                        tiles[row * gp.maxScreenCol + col].collision = true;
+                        tiles[mapNum][row * gp.maxScreenCol + col].collision = true;
                     }
                     col++;
                 }
@@ -73,13 +75,13 @@ public class TileManager {
         }
     }
 
-    public void draw(Graphics2D g2d) {
+    public void draw(Graphics2D g2d, int mapNum) {
         int col = 0;
         int x = 0;
         int y = 0;
 
         for (int i = 0; i < gp.maxScreenCol * gp.maxScreenRow; i++) {
-            g2d.drawImage(tiles[i].image, x, y, null);
+            g2d.drawImage(tiles[mapNum][i].image, x, y, null);
             col++;
             x += gp.tileSize;
 
