@@ -26,7 +26,7 @@ public class TileManager {
             getTileImage(i, "map_01_" + (i + 1));
         }
         
-        loadCollision("/maps/map01.txt");
+        loadCollision("/maps/map_1.txt");
     }
 
     public void getTileImage(int index, String path) {

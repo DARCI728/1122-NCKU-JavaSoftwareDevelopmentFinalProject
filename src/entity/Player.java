@@ -63,8 +63,9 @@ public class Player extends Entity {
             attacking();
         }
 
-        if ((keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true
-                || keyH.rightPressed == true) || keyH.move == true && attacking == false) {
+        if ((keyH.upPressed == true || keyH.downPressed == true
+                || keyH.leftPressed == true || keyH.rightPressed == true)
+                || keyH.move == true && attacking == false) {
 
             if (moving == false) {
                 if (keyH.upPressed == true) {
@@ -97,25 +98,25 @@ public class Player extends Entity {
             if (stopPosition != -1) {
                 switch (direction) {
                     case "up":
-                        if (worldY - speed < stopPosition) {
+                        if (worldY - speed <= stopPosition) {
                             collisionOn = true;
                         }
                         break;
 
                     case "down":
-                        if (worldY + speed > stopPosition) {
+                        if (worldY + speed >= stopPosition) {
                             collisionOn = true;
                         }
                         break;
 
                     case "left":
-                        if (worldX - speed < stopPosition) {
+                        if (worldX - speed <= stopPosition) {
                             collisionOn = true;
                         }
                         break;
 
                     case "right":
-                        if (worldX + speed > stopPosition) {
+                        if (worldX + speed >= stopPosition) {
                             collisionOn = true;
                         }
                         break;

@@ -10,6 +10,7 @@ import java.util.Comparator;
 import javax.swing.JPanel;
 
 import entity.*;
+import environment.EnvironmentManager;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -29,6 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
     // System settings
     Thread gameThread;
     TileManager tileM = new TileManager(this);
+    EnvironmentManager envM = new EnvironmentManager(this);
     public AssetSetter aSetter = new AssetSetter(this);
     public CollisionChecker cChecker = new CollisionChecker(this);
     public KeyHandler keyH = new KeyHandler(this);
@@ -59,6 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void setUpGame() {
         aSetter.setMonster();
         aSetter.setObject();
+        envM.setUpEnvironment();
         gameState = menuState;
     }
 
@@ -146,6 +149,8 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             entityList.clear();
+            
+            envM.draw(g2d);
         }
 
         ui.draw(g2d);

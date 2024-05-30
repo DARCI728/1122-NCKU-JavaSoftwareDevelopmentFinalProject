@@ -16,7 +16,7 @@ public class MOB_Slime extends Entity {
         maxLife = 1;
         life = maxLife;
 
-        solidArea = new Rectangle(0, 0, 48, 48);
+        solidArea = new Rectangle(4, 4, 40, 40);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
