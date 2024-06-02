@@ -90,9 +90,19 @@ public class Player extends Entity {
             attacking();
         }
 
+        if (shooting == true) {
+            if (getArrow == true) {
+                shooting();
+                getArrow = false;
+            } else {
+                // you dont hava arrow
+            }
+
+        }
+
         if ((keyH.upPressed == true || keyH.downPressed == true
                 || keyH.leftPressed == true || keyH.rightPressed == true)
-                || keyH.move == true && attacking == false) {
+                || keyH.move == true && attacking == false && shooting == false) {
 
             if (moving == false) {
                 if (keyH.upPressed == true) {
@@ -241,6 +251,30 @@ public class Player extends Entity {
         }
     }
 
+    public void shooting() {
+        int tempX = worldX, tempY = worldY;
+        switch (direction) {
+            case "up":
+                worldY-=gp.tileSize;
+                break;
+            case "down":
+                worldY+=gp.tileSize;
+                break;
+            case "left":
+                worldX-=gp.tileSize;
+                break;
+            case "right":
+                worldX += gp.tileSize;
+                break;
+        }
+        Entity arrow = new OBJ_Arrow(gp, tempX, tempY, direction);
+        worldX = tempX;
+        worldY = tempY;
+        gp.obj[2] = arrow;
+        shooting = false;
+
+    }
+
     public void damageMonster(int i) {
         if (i != -1) {
             if (gp.mob[i].invincible == false) {
@@ -290,6 +324,7 @@ public class Player extends Entity {
 
                 case "Bow":
                     gp.obj[i] = null;
+                    getArrow = true;
                     if (inventory.size() == 1) {
                         inventory.add(new OBJ_Null(gp));
                         inventory.add(new OBJ_Bow(gp));
@@ -297,7 +332,10 @@ public class Player extends Entity {
                         inventory.add(new OBJ_Bow(gp));
                     }
                     break;
-
+                case "Arrow":
+                    gp.obj[i] = null;
+                    getArrow = true;
+                    break;
                 default:
                     break;
             }

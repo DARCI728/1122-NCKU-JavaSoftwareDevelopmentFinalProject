@@ -29,6 +29,8 @@ public class Entity {
     public int spriteCounter = 0;
     public int spriteNun = 1;
     public boolean attacking = false;
+    public boolean shooting = false;
+    public boolean getArrow = false;
     public boolean collisionOn = false;
 
     // Monster

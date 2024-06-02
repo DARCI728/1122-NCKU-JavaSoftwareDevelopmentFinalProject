@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import entity.*;
 import environment.EnvironmentManager;
+import object.OBJ_Arrow;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -54,7 +55,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int dialogueState = 2;
     public final int pauseState = 3;
     public final int gameOverState = 4;
-
+    public final int shootState = 5;
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
@@ -78,6 +79,8 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setObject();
         eventH = new EventHander(this);
         player.setDefaultValue();
+        player.getArrow=false;
+        
     }
 
     public void startGameThread() {
@@ -115,7 +118,9 @@ public class GamePanel extends JPanel implements Runnable {
         switch (gameState) {
             case playState:
                 player.update();
-
+                if (obj[2] != null) {
+                    obj[2].update();
+                }
                 for (int i = 0; i < mob.length; i++) {
                     if (mob[i] != null) {
                         if (mob[i].alive == false) {

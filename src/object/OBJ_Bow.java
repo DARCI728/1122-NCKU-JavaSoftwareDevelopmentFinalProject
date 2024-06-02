@@ -8,6 +8,7 @@ import main.GamePanel;
 
 public class OBJ_Bow extends Entity {
 
+
     public OBJ_Bow(GamePanel gp) {
         super(gp);
 
@@ -18,7 +19,9 @@ public class OBJ_Bow extends Entity {
         solidAreaDefaultX = 0;
         solidAreaDefaultY = 0;
     }
+    public void update() {
 
+    }
     public void draw(Graphics2D g2d) {
         g2d.drawImage(itemImage1, worldX, worldY, gp.tileSize, gp.tileSize, null);
     }
