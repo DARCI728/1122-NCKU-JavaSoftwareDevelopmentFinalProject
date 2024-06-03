@@ -103,7 +103,10 @@ public class KeyHandler implements KeyListener {
 
                 case 2:
                     gp.player.direction = "up";
-                    gp.player.shooting = true;
+                    if (gp.player.hasArrow) {
+                        gp.player.shooting = true;
+                    }
+
                     break;
 
                 default:
@@ -125,7 +128,10 @@ public class KeyHandler implements KeyListener {
 
                 case 2:
                     gp.player.direction = "down";
-                    gp.player.shooting = true;
+                    if (gp.player.hasArrow) {
+                        gp.player.shooting = true;
+                    }
+
                     break;
 
                 default:
@@ -148,7 +154,10 @@ public class KeyHandler implements KeyListener {
 
                 case 2:
                     gp.player.direction = "left";
-                    gp.player.shooting = true;
+                    if (gp.player.hasArrow) {
+                        gp.player.shooting = true;
+                    }
+
                     break;
                 default:
                     break;
@@ -170,7 +179,9 @@ public class KeyHandler implements KeyListener {
 
                 case 2:
                     gp.player.direction = "right";
-                    gp.player.shooting = true;
+                    if (gp.player.hasArrow) {
+                        gp.player.shooting = true;
+                    }
                     break;
                 default:
                     break;

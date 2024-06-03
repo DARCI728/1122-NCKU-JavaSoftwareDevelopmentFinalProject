@@ -25,18 +25,19 @@ public class Entity {
     public BufferedImage atkUp1, atkUp2, atkDown1, atkDown2, atkLeft1, atkLeft2, atkRight1, attackRight2;
     public Rectangle atkArea = new Rectangle(0, 0, 0, 0);
     public String direction = "down";
+    public int maxLife;
+    public int life;
     public int speed = 4;
     public int spriteCounter = 0;
     public int spriteNun = 1;
+    public boolean moving = false;
     public boolean attacking = false;
     public boolean shooting = false;
-    public boolean getArrow = false;
     public boolean collisionOn = false;
+    public Projectile projectile;
 
     // Monster
     public BufferedImage mobImage;
-    public int maxLife;
-    public int life;
     public int dyingCnt = 0;
     public boolean alive = true;
     public boolean dying = false;
@@ -91,7 +92,6 @@ public class Entity {
         }
 
         if (dyingCnt > 30) {
-            dying = false;
             alive = false;
         }
     }

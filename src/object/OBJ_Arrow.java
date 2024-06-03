@@ -1,133 +1,60 @@
 package object;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-
-import entity.Entity;
+import java.awt.image.BufferedImage;
+import entity.Projectile;
 import main.GamePanel;
 
-public class OBJ_Arrow extends Entity {
-    private String direction;
-    private int speed = 8;
-    boolean moving = false;
-    int stopPosition = -1;
+public class OBJ_Arrow extends Projectile {
 
-    public OBJ_Arrow(GamePanel gp, int x, int y, String direction) {
+    GamePanel gp;
+
+    public OBJ_Arrow(GamePanel gp) {
         super(gp);
-        this.direction = direction;
-        this.worldX = x;
-        this.worldY = y;
+        this.gp = gp;
+
         name = "Arrow";
-        itemImage1 = getImage("/objects/arrow_" + direction + ".png", gp.tileSize, gp.tileSize);
+        speed = 8;
 
-        solidArea = new Rectangle(0, 0, 48, 48);
-        solidAreaDefaultX = solidArea.x;
-        solidAreaDefaultY = solidArea.y;
+        solidArea = new Rectangle(4, 4, 40, 40);
+        solidAreaDefaultX = 0;
+        solidAreaDefaultY = 0;
+
+        getImage();
     }
 
-    public void update() {
-
-        moving = true;
-        collisionOn = false;
-        gp.cChecker.checkTile(this);
-
-        // CHECK MOB COLLISION
-        int mobIndex = gp.cChecker.checkEntity(this, gp.mob);
-        // CHECK OBJ COLLISION
-        int objIndex = gp.cChecker.checkObject(this, true);
-        stopPosition = shootOnObject(objIndex, stopPosition);
-        if (stopPosition != -1) {
-            switch (direction) {
-                case "up":
-                    if (worldY - speed <= stopPosition) {
-                        collisionOn = true;
-                    }
-                    break;
-
-                case "down":
-                    if (worldY + speed >= stopPosition) {
-                        collisionOn = true;
-                    }
-                    break;
-
-                case "left":
-                    if (worldX - speed <= stopPosition) {
-                        collisionOn = true;
-                    }
-                    break;
-
-                case "right":
-                    if (worldX + speed >= stopPosition) {
-                        collisionOn = true;
-                    }
-                    break;
-            }
-        }
-        if (collisionOn == false) {
-            switch (direction) {
-                case "up":
-                    worldY -= speed;
-                    break;
-
-                case "down":
-                    worldY += speed;
-                    break;
-
-                case "left":
-                    worldX -= speed;
-                    break;
-
-                case "right":
-                    worldX += speed;
-                    break;
-            }
-        } else if (collisionOn == true) {
-            stopPosition = -1;
-            moving = false;
-        }
-        if (mobIndex != -1) {
-            gp.player.damageMonster(mobIndex);
-            worldX = gp.mob[mobIndex].worldX;
-            worldY = gp.mob[mobIndex].worldY;
-        }
-
-    }
-
-    public int shootOnObject(int i, int originaStopPosition) {
-        int stopPosition = -1;
-
-        if (i != -1) {
-            switch (direction) {
-                case "up":
-                    stopPosition = gp.obj[i].worldY + 1 * gp.tileSize;
-                    stopPosition = gp.obj[i].worldY;
-                    break;
-
-                case "down":
-                    stopPosition = gp.obj[i].worldY - 1 * gp.tileSize;
-                    stopPosition = gp.obj[i].worldY;
-                    break;
-
-                case "left":
-                    stopPosition = gp.obj[i].worldX + 1 * gp.tileSize;
-                    stopPosition = gp.obj[i].worldX;
-                    break;
-
-                case "right":
-                    stopPosition = gp.obj[i].worldX - 1 * gp.tileSize;
-                    stopPosition = gp.obj[i].worldX;
-                    break;
-            }
-        }
-
-        if (originaStopPosition != -1) {
-            stopPosition = originaStopPosition;
-        }
-
-        return stopPosition;
+    public void getImage() {
+        up1 = getImage("/objects/arrow_up.png", gp.tileSize, gp.tileSize);
+        down1 = getImage("/objects/arrow_down.png", gp.tileSize, gp.tileSize);
+        left1 = getImage("/objects/arrow_left.png", gp.tileSize, gp.tileSize);
+        right1 = getImage("/objects/arrow_right.png", gp.tileSize, gp.tileSize);
     }
 
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(itemImage1, worldX, worldY, gp.tileSize, gp.tileSize, null);
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
+        BufferedImage image = null;
+
+        switch (direction) {
+            case "up":
+                image = up1;
+                break;
+
+            case "down":
+                image = down1;
+                break;
+
+            case "left":
+                image = left1;
+                break;
+
+            case "right":
+                image = right1;
+                break;
+        }
+
+        g2d.drawImage(image, worldX, worldY, null);
     }
 }

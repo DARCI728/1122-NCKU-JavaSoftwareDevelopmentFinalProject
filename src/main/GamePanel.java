@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 
 import entity.*;
 import environment.EnvironmentManager;
-import object.OBJ_Arrow;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -40,7 +39,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     // Entity
     public Player player = new Player(this, keyH);
-    public Entity obj[] = new Entity[10];
+    public ArrayList<Entity> obj = new ArrayList<Entity>();
+    public ArrayList<Entity> projectile = new ArrayList<Entity>();
     public Entity mob[] = new Entity[10];
     ArrayList<Entity> entityList = new ArrayList<Entity>();
 
@@ -55,7 +55,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int dialogueState = 2;
     public final int pauseState = 3;
     public final int gameOverState = 4;
-    public final int shootState = 5;
+
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.black);
@@ -72,15 +72,13 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void retry() {
-        obj = new Entity[10];
+        obj.clear();
         mob = new Entity[10];
         entityList.clear();
         aSetter.setMonster();
         aSetter.setObject();
         eventH = new EventHander(this);
         player.setDefaultValue();
-        player.getArrow=false;
-        
     }
 
     public void startGameThread() {
@@ -118,9 +116,16 @@ public class GamePanel extends JPanel implements Runnable {
         switch (gameState) {
             case playState:
                 player.update();
-                if (obj[2] != null) {
-                    obj[2].update();
+
+                for (int i = 0; i < projectile.size(); i++) {
+                    if (projectile.get(i).alive) {
+                        projectile.get(i).update();
+                        ;
+                    } else {
+                        projectile.remove(i);
+                    }
                 }
+
                 for (int i = 0; i < mob.length; i++) {
                     if (mob[i] != null) {
                         if (mob[i].alive == false) {
@@ -181,15 +186,21 @@ public class GamePanel extends JPanel implements Runnable {
 
             entityList.add(player);
 
-            for (Entity mob : mob) {
-                if (mob != null) {
-                    entityList.add(mob);
+            for (int i = 0; i < obj.size(); i++) {
+                if (obj.get(i) != null) {
+                    entityList.add(obj.get(i));
                 }
             }
 
-            for (Entity obj : obj) {
-                if (obj != null) {
-                    entityList.add(obj);
+            for (int i = 0; i < projectile.size(); i++) {
+                if (projectile.get(i) != null) {
+                    entityList.add(projectile.get(i));
+                }
+            }
+
+            for (int i = 0; i < 10; i++) {
+                if (mob[i] != null) {
+                    entityList.add(mob[i]);
                 }
             }
 

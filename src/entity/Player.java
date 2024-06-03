@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -10,10 +11,11 @@ import main.KeyHandler;
 import object.*;
 
 public class Player extends Entity {
+
     KeyHandler keyH;
 
     int stopPosition = -1;
-    boolean moving = false;
+    public boolean hasArrow;
 
     public ArrayList<Entity> inventory = new ArrayList<Entity>();
 
@@ -22,13 +24,10 @@ public class Player extends Entity {
         this.keyH = keyH;
 
         maxLife = 1;
-        life = maxLife;
 
-        solidArea = new Rectangle(5, 5, 38, 38);
+        solidArea = new Rectangle(2, 2, 44, 44);
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
-
-        inventory.add(new OBJ_gloves(gp));
 
         atkArea = new Rectangle(0, 0, 48, 48);
 
@@ -77,8 +76,10 @@ public class Player extends Entity {
 
         life = maxLife;
         direction = "down";
+        hasArrow = false;
         inventory.clear();
-        inventory.add(new OBJ_gloves(gp));
+        inventory.add(new OBJ_Gloves(gp));
+        projectile = new OBJ_Arrow(gp);
     }
 
     public void update() {
@@ -86,35 +87,28 @@ public class Player extends Entity {
             gp.gameState = gp.gameOverState;
         }
 
-        if (attacking == true) {
+        if (attacking) {
             attacking();
         }
 
-        if (shooting == true) {
-            if (getArrow == true) {
-                shooting();
-                getArrow = false;
-            } else {
-                // you dont hava arrow
-            }
-
+        if (shooting && hasArrow) {
+            shooting();
         }
 
-        if ((keyH.upPressed == true || keyH.downPressed == true
-                || keyH.leftPressed == true || keyH.rightPressed == true)
-                || keyH.move == true && attacking == false && shooting == false) {
+        if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed)
+                || keyH.move == true && attacking == false) {
 
             if (moving == false) {
-                if (keyH.upPressed == true) {
+                if (keyH.upPressed) {
                     direction = "up";
                 }
-                if (keyH.downPressed == true) {
+                if (keyH.downPressed) {
                     direction = "down";
                 }
-                if (keyH.leftPressed == true) {
+                if (keyH.leftPressed) {
                     direction = "left";
                 }
-                if (keyH.rightPressed == true) {
+                if (keyH.rightPressed) {
                     direction = "right";
                 }
             }
@@ -138,25 +132,25 @@ public class Player extends Entity {
             if (stopPosition != -1) {
                 switch (direction) {
                     case "up":
-                        if (worldY - speed <= stopPosition) {
+                        if (worldY - speed < stopPosition) {
                             collisionOn = true;
                         }
                         break;
 
                     case "down":
-                        if (worldY + speed >= stopPosition) {
+                        if (worldY + speed > stopPosition) {
                             collisionOn = true;
                         }
                         break;
 
                     case "left":
-                        if (worldX - speed <= stopPosition) {
+                        if (worldX - speed < stopPosition) {
                             collisionOn = true;
                         }
                         break;
 
                     case "right":
-                        if (worldX + speed >= stopPosition) {
+                        if (worldX + speed > stopPosition) {
                             collisionOn = true;
                         }
                         break;
@@ -252,27 +246,10 @@ public class Player extends Entity {
     }
 
     public void shooting() {
-        int tempX = worldX, tempY = worldY;
-        switch (direction) {
-            case "up":
-                worldY-=gp.tileSize;
-                break;
-            case "down":
-                worldY+=gp.tileSize;
-                break;
-            case "left":
-                worldX-=gp.tileSize;
-                break;
-            case "right":
-                worldX += gp.tileSize;
-                break;
-        }
-        Entity arrow = new OBJ_Arrow(gp, tempX, tempY, direction);
-        worldX = tempX;
-        worldY = tempY;
-        gp.obj[2] = arrow;
+        projectile.set(worldX, worldY, direction, true, this);
+        gp.projectile.add(projectile);
+        hasArrow = false;
         shooting = false;
-
     }
 
     public void damageMonster(int i) {
@@ -292,29 +269,28 @@ public class Player extends Entity {
         int stopPosition = -1;
 
         if (i != -1) {
-            String objectName = gp.obj[i].name;
+            String objectName = gp.obj.get(i).name;
 
             switch (direction) {
                 case "up":
-                    stopPosition = gp.obj[i].worldY;
+                    stopPosition = gp.obj.get(i).worldY;
                     break;
 
                 case "down":
-                    stopPosition = gp.obj[i].worldY;
+                    stopPosition = gp.obj.get(i).worldY;
                     break;
 
                 case "left":
-                    stopPosition = gp.obj[i].worldX;
+                    stopPosition = gp.obj.get(i).worldX;
                     break;
 
                 case "right":
-                    stopPosition = gp.obj[i].worldX;
+                    stopPosition = gp.obj.get(i).worldX;
                     break;
             }
 
             switch (objectName) {
                 case "Sword":
-                    gp.obj[i] = null;
                     if (inventory.size() == 1) {
                         inventory.add(new OBJ_Sword(gp));
                     } else {
@@ -323,8 +299,7 @@ public class Player extends Entity {
                     break;
 
                 case "Bow":
-                    gp.obj[i] = null;
-                    getArrow = true;
+                    hasArrow = true;
                     if (inventory.size() == 1) {
                         inventory.add(new OBJ_Null(gp));
                         inventory.add(new OBJ_Bow(gp));
@@ -332,23 +307,45 @@ public class Player extends Entity {
                         inventory.add(new OBJ_Bow(gp));
                     }
                     break;
+
                 case "Arrow":
-                    gp.obj[i] = null;
-                    getArrow = true;
+                    hasArrow = true;
                     break;
+
                 default:
                     break;
             }
+
+            gp.obj.remove(i);
         }
 
-        if (originaStopPosition != -1) {
+        if (stopPosition == -1) {
             stopPosition = originaStopPosition;
         }
 
         return stopPosition;
     }
 
+    public void pickUpArrow(Entity arrow) {
+        this.solidArea.x = this.worldX + this.solidArea.x;
+        this.solidArea.y = this.worldY + this.solidArea.y;
+        arrow.solidArea.x = arrow.worldX + arrow.solidArea.x;
+        arrow.solidArea.y = arrow.worldY + arrow.solidArea.y;
+
+        if (this.solidArea.intersects(arrow.solidArea)) {
+            gp.obj.remove(arrow);
+            hasArrow = true;
+        }
+
+        this.solidArea.x = this.solidAreaDefaultX;
+        this.solidArea.y = this.solidAreaDefaultY;
+        arrow.solidArea.x = arrow.solidAreaDefaultX;
+        arrow.solidArea.y = arrow.solidAreaDefaultY;
+    }
+
     public void draw(Graphics2D g2d) {
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
         BufferedImage image = null;
         int tempScreenX = worldX;
         int tempScreenY = worldY;

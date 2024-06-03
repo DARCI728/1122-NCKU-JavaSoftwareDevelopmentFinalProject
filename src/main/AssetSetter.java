@@ -33,19 +33,19 @@ public class AssetSetter {
     public void setObject() {
         switch (gp.currentMap) {
             case 0:
-                gp.obj[0] = new OBJ_Sword(gp);
-                gp.obj[0].worldX = gp.tileSize * 10;
-                gp.obj[0].worldY = gp.tileSize * 7;
-                gp.obj[1] = new OBJ_Bow(gp);
-                gp.obj[1].worldX = gp.tileSize * 9;
-                gp.obj[1].worldY = gp.tileSize * 7;
-                
+                gp.obj.add(new OBJ_Sword(gp));
+                gp.obj.get(0).worldX = gp.tileSize * 10;
+                gp.obj.get(0).worldY = gp.tileSize * 7;
+                gp.obj.add(new OBJ_Bow(gp));
+                gp.obj.get(1).worldX = gp.tileSize * 9;
+                gp.obj.get(1).worldY = gp.tileSize * 7;
+
                 break;
 
             case 1:
-                gp.obj[0] = new OBJ_Sword(gp);
-                gp.obj[0].worldX = gp.tileSize * 7;
-                gp.obj[0].worldY = gp.tileSize * 10;
+                gp.obj.add(new OBJ_Sword(gp));
+                gp.obj.get(0).worldX = gp.tileSize * 7;
+                gp.obj.get(0).worldY = gp.tileSize * 10;
                 break;
 
             default:

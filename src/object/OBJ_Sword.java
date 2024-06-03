@@ -1,5 +1,6 @@
 package object;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
@@ -20,6 +21,7 @@ public class OBJ_Sword extends Entity {
     }
 
     public void draw(Graphics2D g2d) {
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         g2d.drawImage(itemImage1, worldX, worldY, gp.tileSize, gp.tileSize, null);
     }
 }
