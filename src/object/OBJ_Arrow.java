@@ -18,7 +18,7 @@ public class OBJ_Arrow extends Projectile {
         name = "Arrow";
         speed = 8;
 
-        solidArea = new Rectangle(4, 4, 40, 40);
+        solidArea = new Rectangle(2, 2, 44, 44);
         solidAreaDefaultX = 0;
         solidAreaDefaultY = 0;
 

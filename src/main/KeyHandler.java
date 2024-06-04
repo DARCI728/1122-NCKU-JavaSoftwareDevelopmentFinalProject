@@ -8,7 +8,6 @@ public class KeyHandler implements KeyListener {
     GamePanel gp;
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
-    public boolean move;
 
     public KeyHandler(GamePanel gp) {
         this.gp = gp;
@@ -89,11 +88,14 @@ public class KeyHandler implements KeyListener {
     }
 
     public void playState(int code) {
+        if (gp.player.inventory.size() == 1) {
+            gp.ui.slotCol = 0;
+        }
+
         if (code == KeyEvent.VK_W) {
             switch (gp.ui.slotCol) {
                 case 0:
                     upPressed = true;
-                    move = true;
                     break;
 
                 case 1:
@@ -118,7 +120,6 @@ public class KeyHandler implements KeyListener {
             switch (gp.ui.slotCol) {
                 case 0:
                     downPressed = true;
-                    move = true;
                     break;
 
                 case 1:
@@ -144,7 +145,6 @@ public class KeyHandler implements KeyListener {
             switch (gp.ui.slotCol) {
                 case 0:
                     leftPressed = true;
-                    move = true;
                     break;
 
                 case 1:
@@ -169,7 +169,6 @@ public class KeyHandler implements KeyListener {
             switch (gp.ui.slotCol) {
                 case 0:
                     rightPressed = true;
-                    move = true;
                     break;
 
                 case 1:

@@ -14,7 +14,7 @@ public class Player extends Entity {
 
     KeyHandler keyH;
 
-    int stopPosition = -1;
+    int stopX = -1, stopY = -1;
     public boolean hasArrow;
 
     public ArrayList<Entity> inventory = new ArrayList<Entity>();
@@ -59,6 +59,22 @@ public class Player extends Entity {
     }
 
     public void setDefaultValue() {
+        stopX = -1;
+        stopY = -1;
+
+        moving = false;
+        attacking = false;
+        shooting = false;
+
+        collisionOn = false;
+
+        life = maxLife;
+        direction = "down";
+        hasArrow = false;
+        inventory.clear();
+        inventory.add(new OBJ_Gloves(gp));
+        projectile = new OBJ_Arrow(gp);
+
         switch (gp.currentMap) {
             case 0:
                 worldX = gp.tileSize * 9;
@@ -73,18 +89,16 @@ public class Player extends Entity {
             default:
                 break;
         }
-
-        life = maxLife;
-        direction = "down";
-        hasArrow = false;
-        inventory.clear();
-        inventory.add(new OBJ_Gloves(gp));
-        projectile = new OBJ_Arrow(gp);
     }
 
     public void update() {
         if (life <= 0) {
             gp.gameState = gp.gameOverState;
+        }
+
+        if (moving) {
+            attacking = false;
+            shooting = false;
         }
 
         if (attacking) {
@@ -95,8 +109,7 @@ public class Player extends Entity {
             shooting();
         }
 
-        if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed)
-                || keyH.move == true && attacking == false) {
+        if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) || moving) {
 
             if (moving == false) {
                 if (keyH.upPressed) {
@@ -119,39 +132,53 @@ public class Player extends Entity {
             collisionOn = false;
             gp.cChecker.checkTile(this);
 
-            // CHECK MOB COLLISION
-            int mobIndex = gp.cChecker.checkEntity(this, gp.mob);
-
             // CHECK OBJ COLLISION
             int objIndex = gp.cChecker.checkObject(this, true);
-            stopPosition = pickUpObject(objIndex, stopPosition);
+
+            if (objIndex != -1) {
+                pickUpObject(objIndex);
+                stopX = gp.obj.get(objIndex).worldX;
+                stopY = gp.obj.get(objIndex).worldY;
+                gp.obj.remove(objIndex);
+            }
+
+            // CHECK MOB COLLISION
+            gp.cChecker.checkEntity(this, gp.mob);
 
             // CHECK EVENT
-            gp.eventH.checkEvent();
+            gp.eventH.checkEvent(this, true);
 
-            if (stopPosition != -1) {
+            if (stopX != -1 || stopY != -1) {
                 switch (direction) {
                     case "up":
-                        if (worldY - speed < stopPosition) {
+                        if (worldY - speed < stopY) {
                             collisionOn = true;
+                            worldX = stopX;
+                            worldY = stopY;
                         }
                         break;
 
                     case "down":
-                        if (worldY + speed > stopPosition) {
+                        if (worldY + speed > stopY) {
                             collisionOn = true;
+                            worldX = stopX;
+                            worldY = stopY;
                         }
                         break;
 
                     case "left":
-                        if (worldX - speed < stopPosition) {
+                        if (worldX - speed < stopX) {
                             collisionOn = true;
+                            worldX = stopX;
+                            worldY = stopY;
                         }
                         break;
 
                     case "right":
-                        if (worldX + speed > stopPosition) {
+                        if (worldX + speed > stopX) {
                             collisionOn = true;
+                            worldX = stopX;
+                            worldY = stopY;
                         }
                         break;
                 }
@@ -175,10 +202,10 @@ public class Player extends Entity {
                         worldX += speed;
                         break;
                 }
-            } else if (collisionOn == true) {
-                stopPosition = -1;
-                keyH.move = false;
+            } else {
                 moving = false;
+                stopX = -1;
+                stopY = -1;
             }
 
             spriteCounter++;
@@ -265,65 +292,35 @@ public class Player extends Entity {
         }
     }
 
-    public int pickUpObject(int i, int originaStopPosition) {
-        int stopPosition = -1;
+    public void pickUpObject(int i) {
+        String objectName = gp.obj.get(i).name;
 
-        if (i != -1) {
-            String objectName = gp.obj.get(i).name;
+        switch (objectName) {
+            case "Sword":
+                if (inventory.size() == 1) {
+                    inventory.add(new OBJ_Sword(gp));
+                } else {
+                    inventory.set(1, new OBJ_Sword(gp));
+                }
+                break;
 
-            switch (direction) {
-                case "up":
-                    stopPosition = gp.obj.get(i).worldY;
-                    break;
+            case "Bow":
+                hasArrow = true;
+                if (inventory.size() == 1) {
+                    inventory.add(new OBJ_Null(gp));
+                    inventory.add(new OBJ_Bow(gp));
+                } else {
+                    inventory.add(new OBJ_Bow(gp));
+                }
+                break;
 
-                case "down":
-                    stopPosition = gp.obj.get(i).worldY;
-                    break;
+            case "Arrow":
+                hasArrow = true;
+                break;
 
-                case "left":
-                    stopPosition = gp.obj.get(i).worldX;
-                    break;
-
-                case "right":
-                    stopPosition = gp.obj.get(i).worldX;
-                    break;
-            }
-
-            switch (objectName) {
-                case "Sword":
-                    if (inventory.size() == 1) {
-                        inventory.add(new OBJ_Sword(gp));
-                    } else {
-                        inventory.set(1, new OBJ_Sword(gp));
-                    }
-                    break;
-
-                case "Bow":
-                    hasArrow = true;
-                    if (inventory.size() == 1) {
-                        inventory.add(new OBJ_Null(gp));
-                        inventory.add(new OBJ_Bow(gp));
-                    } else {
-                        inventory.add(new OBJ_Bow(gp));
-                    }
-                    break;
-
-                case "Arrow":
-                    hasArrow = true;
-                    break;
-
-                default:
-                    break;
-            }
-
-            gp.obj.remove(i);
+            default:
+                break;
         }
-
-        if (stopPosition == -1) {
-            stopPosition = originaStopPosition;
-        }
-
-        return stopPosition;
     }
 
     public void pickUpArrow(Entity arrow) {

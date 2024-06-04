@@ -62,7 +62,7 @@ public class CollisionChecker {
         }
     }
 
-    public int checkObject(Entity entity, boolean player) {
+    public int checkObject(Entity entity, boolean isPlayer) {
         int index = -1;
 
         for (int i = 0; i < gp.obj.size(); i++) {
@@ -95,7 +95,7 @@ public class CollisionChecker {
                         entity.collisionOn = true;
                     }
 
-                    if (player == true) {
+                    if (isPlayer == true) {
                         index = i;
                     }
                 }

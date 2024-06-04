@@ -15,7 +15,7 @@ public class OBJ_Sword extends Entity {
         name = "Sword";
         itemImage1 = getImage("/objects/sword.png", gp.tileSize, gp.tileSize);
 
-        solidArea = new Rectangle(0, 0, 48, 48);
+        solidArea = new Rectangle(2, 2, 44, 44);
         solidAreaDefaultX = 0;
         solidAreaDefaultY = 0;
     }

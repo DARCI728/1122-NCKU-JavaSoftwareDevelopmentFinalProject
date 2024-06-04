@@ -1,5 +1,7 @@
 package main;
 
+import entity.Entity;
+
 public class EventHander {
     GamePanel gp;
     EventRect eventRect[][][];
@@ -31,47 +33,69 @@ public class EventHander {
         }
     }
 
-    public void checkEvent() {
+    public int[] checkEvent(Entity entity, boolean isPlayer) {
+        int coordinate[] = new int[2];
+
         switch (gp.currentMap) {
             case 0:
-                if (hit(0, 8, 5, "any")) {
-                    teleport(gp.dialogueState);
+                if (hit(entity, isPlayer, 0, 8, 5, "any")) {
+                    if (isPlayer) {
+                        teleport(gp.dialogueState);
+                    } else {
+                        coordinate[0] = 8;
+                        coordinate[1] = 5;
+                    }
                 }
                 break;
 
             case 1:
-                if (hit(1, 9, 10, "any")) {
-                    trap(gp.dialogueState);
+                if (hit(entity, isPlayer, 1, 9, 10, "any")) {
+                    if (isPlayer) {
+                        trap(gp.dialogueState);
+                    } else {
+                        coordinate[0] = 9;
+                        coordinate[1] = 10;
+                    }
+
                 }
 
-                if (hit(1, 7, 9, "any")) {
-                    trap(gp.dialogueState);
+                if (hit(entity, isPlayer, 1, 7, 9, "any")) {
+                    if (isPlayer) {
+                        trap(gp.dialogueState);
+                    } else {
+                        coordinate[0] = 7;
+                        coordinate[1] = 9;
+                    }
                 }
                 break;
 
             default:
                 break;
         }
+
+        return coordinate;
     }
 
-    public boolean hit(int mapNum, int col, int row, String reqDirection) {
+    public boolean hit(Entity entity, boolean isPlayer, int mapNum, int col, int row, String reqDirection) {
         boolean hit = false;
 
-        gp.player.solidArea.x = gp.player.worldX + gp.player.solidArea.x;
-        gp.player.solidArea.y = gp.player.worldY + gp.player.solidArea.y;
+        entity.solidArea.x = entity.worldX + entity.solidArea.x;
+        entity.solidArea.y = entity.worldY + entity.solidArea.y;
         eventRect[mapNum][col][row].x = col * gp.tileSize + eventRect[mapNum][col][row].x;
         eventRect[mapNum][col][row].y = row * gp.tileSize + eventRect[mapNum][col][row].y;
 
-        if (gp.player.solidArea.intersects(eventRect[mapNum][col][row])) {
-            if (gp.player.direction.contentEquals(reqDirection) || reqDirection.contentEquals("any")
-                    && eventRect[mapNum][col][row].eventDown == false) {
-                eventRect[mapNum][col][row].eventDown = true;
+        if (entity.solidArea.intersects(eventRect[mapNum][col][row])) {
+            if (entity.direction.contentEquals(reqDirection) || reqDirection.contentEquals("any")
+                    && eventRect[mapNum][col][row].eventDone == false) {
+                if (isPlayer) {
+                    eventRect[mapNum][col][row].eventDone = true;
+                }
                 hit = true;
             }
         }
 
-        gp.player.solidArea.x = gp.player.solidAreaDefaultX;
-        gp.player.solidArea.y = gp.player.solidAreaDefaultY;
+        entity.solidArea.x = entity.solidAreaDefaultX;
+        entity.solidArea.y = entity.solidAreaDefaultY;
         eventRect[mapNum][col][row].x = eventRect[mapNum][col][row].eventRectDefaultX;
         eventRect[mapNum][col][row].y = eventRect[mapNum][col][row].eventRectDefaultY;
 

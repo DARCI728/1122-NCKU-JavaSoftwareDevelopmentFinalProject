@@ -78,7 +78,7 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setMonster();
         aSetter.setObject();
         eventH = new EventHander(this);
-        player.setDefaultValue();
+        player = new Player(this, keyH);
     }
 
     public void startGameThread() {

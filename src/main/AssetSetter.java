@@ -46,6 +46,9 @@ public class AssetSetter {
                 gp.obj.add(new OBJ_Sword(gp));
                 gp.obj.get(0).worldX = gp.tileSize * 7;
                 gp.obj.get(0).worldY = gp.tileSize * 10;
+                gp.obj.add(new OBJ_Bow(gp));
+                gp.obj.get(1).worldX = gp.tileSize * 9;
+                gp.obj.get(1).worldY = gp.tileSize * 7;
                 break;
 
             default:
