@@ -25,6 +25,15 @@ public class AssetSetter {
                 gp.mob[0].worldY = gp.tileSize * 9;
                 break;
 
+            case 2:
+                gp.mob[0] = new MOB_Slime(gp);
+                gp.mob[0].worldX = gp.tileSize * 5;
+                gp.mob[0].worldY = gp.tileSize * 10;
+                gp.mob[1] = new MOB_Bat(gp);
+                gp.mob[1].worldX = gp.tileSize * 4;
+                gp.mob[1].worldY = gp.tileSize * 6;
+                break;
+
             default:
                 break;
         }
@@ -46,9 +55,12 @@ public class AssetSetter {
                 gp.obj.add(new OBJ_Sword(gp));
                 gp.obj.get(0).worldX = gp.tileSize * 7;
                 gp.obj.get(0).worldY = gp.tileSize * 10;
-                gp.obj.add(new OBJ_Bow(gp));
-                gp.obj.get(1).worldX = gp.tileSize * 9;
-                gp.obj.get(1).worldY = gp.tileSize * 7;
+                break;
+
+            case 2:
+                gp.obj.add(new OBJ_Sword(gp));
+                gp.obj.get(0).worldX = gp.tileSize * 7;
+                gp.obj.get(0).worldY = gp.tileSize * 10;
                 break;
 
             default:

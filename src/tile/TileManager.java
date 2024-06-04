@@ -21,6 +21,9 @@ public class TileManager {
 
         setUpTile("/tiles/map_2/map_2_", 1);
         loadCollision("/maps/map_2.txt", 1);
+
+        setUpTile("/tiles/map_3/map_3_", 2);
+        loadCollision("/maps/map_3.txt", 2);
     }
 
     public void setUpTile(String path, int mapNum) {

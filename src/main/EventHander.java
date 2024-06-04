@@ -40,7 +40,7 @@ public class EventHander {
             case 0:
                 if (hit(entity, isPlayer, 0, 8, 5, "any")) {
                     if (isPlayer) {
-                        teleport(gp.dialogueState);
+                        nextLevel(gp.dialogueState);
                     } else {
                         coordinate[0] = 8;
                         coordinate[1] = 5;
@@ -108,7 +108,7 @@ public class EventHander {
         gp.player.life -= 1;
     }
 
-    public void teleport(int gameState) {
+    public void nextLevel(int gameState) {
         gp.ui.currentDialouge = "Go to next level!";
         gp.gameState = gameState;
         gp.currentMap++;
