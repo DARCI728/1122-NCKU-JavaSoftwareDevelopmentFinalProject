@@ -14,9 +14,9 @@ public class TileManager {
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
-        tiles = new Tile[gp.maxMap][250];
+        tiles = new Tile[gp.maxMap][225];
 
-        setUpTile("/tiles/map_1/map_01_", 0);
+        setUpTile("/tiles/map_1/map_1_", 0);
         loadCollision("/maps/map_1.txt", 0);
 
         setUpTile("/tiles/map_2/map_2_", 1);
@@ -24,6 +24,12 @@ public class TileManager {
 
         setUpTile("/tiles/map_3/map_3_", 2);
         loadCollision("/maps/map_3.txt", 2);
+
+        setUpTile("/tiles/map_4/map_4_", 3);
+        loadCollision("/maps/map_4.txt", 3);
+
+        setUpTile("/tiles/map_5/map_5_", 4);
+        loadCollision("/maps/map_5.txt", 4);
     }
 
     public void setUpTile(String path, int mapNum) {

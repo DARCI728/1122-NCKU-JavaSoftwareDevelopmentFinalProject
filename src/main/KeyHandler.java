@@ -34,6 +34,10 @@ public class KeyHandler implements KeyListener {
         if (gp.gameState == gp.gameOverState) {
             gameOverState(code);
         }
+
+        if (gp.gameState == gp.gameClearState) {
+            gameClearState(code);
+        }
     }
 
     public void keyReleased(java.awt.event.KeyEvent e) {
@@ -88,7 +92,9 @@ public class KeyHandler implements KeyListener {
     }
 
     public void playState(int code) {
-        if (gp.player.inventory.size() == 1) {
+        if (gp.player.inventory.size() == 1
+                || (gp.ui.slotCol == 1 && gp.player.hasSword == false)
+                || (gp.ui.slotCol == 2 && gp.player.hasArrow == false)) {
             gp.ui.slotCol = 0;
         }
 
@@ -100,7 +106,9 @@ public class KeyHandler implements KeyListener {
 
                 case 1:
                     gp.player.direction = "up";
-                    gp.player.attacking = true;
+                    if (gp.player.hasSword) {
+                        gp.player.attacking = true;
+                    }
                     break;
 
                 case 2:
@@ -124,7 +132,9 @@ public class KeyHandler implements KeyListener {
 
                 case 1:
                     gp.player.direction = "down";
-                    gp.player.attacking = true;
+                    if (gp.player.hasSword) {
+                        gp.player.attacking = true;
+                    }
                     break;
 
                 case 2:
@@ -138,7 +148,6 @@ public class KeyHandler implements KeyListener {
                 default:
                     break;
             }
-
         }
 
         if (code == KeyEvent.VK_A) {
@@ -149,7 +158,9 @@ public class KeyHandler implements KeyListener {
 
                 case 1:
                     gp.player.direction = "left";
-                    gp.player.attacking = true;
+                    if (gp.player.hasSword) {
+                        gp.player.attacking = true;
+                    }
                     break;
 
                 case 2:
@@ -162,7 +173,6 @@ public class KeyHandler implements KeyListener {
                 default:
                     break;
             }
-
         }
 
         if (code == KeyEvent.VK_D) {
@@ -173,7 +183,9 @@ public class KeyHandler implements KeyListener {
 
                 case 1:
                     gp.player.direction = "right";
-                    gp.player.attacking = true;
+                    if (gp.player.hasSword) {
+                        gp.player.attacking = true;
+                    }
                     break;
 
                 case 2:
@@ -182,6 +194,7 @@ public class KeyHandler implements KeyListener {
                         gp.player.shooting = true;
                     }
                     break;
+
                 default:
                     break;
             }
@@ -198,22 +211,6 @@ public class KeyHandler implements KeyListener {
 
         if (code == KeyEvent.VK_3) {
             gp.ui.slotCol = 2;
-        }
-
-        if (code == KeyEvent.VK_4) {
-            gp.ui.slotCol = 3;
-        }
-
-        if (code == KeyEvent.VK_5) {
-            gp.ui.slotCol = 4;
-        }
-
-        if (code == KeyEvent.VK_P) {
-            if (gp.gameState == gp.playState) {
-                gp.gameState = gp.pauseState;
-            } else if (gp.gameState == gp.pauseState) {
-                gp.gameState = gp.playState;
-            }
         }
 
         if (code == KeyEvent.VK_R) {
@@ -248,6 +245,38 @@ public class KeyHandler implements KeyListener {
                 case 0:
                     gp.retry();
                     gp.gameState = gp.playState;
+                    break;
+
+                case 1:
+                    System.exit(0);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void gameClearState(int code) {
+        if (code == KeyEvent.VK_W) {
+            gp.ui.commandNum--;
+            if (gp.ui.commandNum < 0) {
+                gp.ui.commandNum = 1;
+            }
+        }
+
+        if (code == KeyEvent.VK_S) {
+            gp.ui.commandNum++;
+            if (gp.ui.commandNum > 1) {
+                gp.ui.commandNum = 0;
+            }
+        }
+
+        if (code == KeyEvent.VK_ENTER) {
+            switch (gp.ui.commandNum) {
+                case 0:
+                    gp.gameState = gp.menuState;
+                    gp.setUpGame();
                     break;
 
                 case 1:

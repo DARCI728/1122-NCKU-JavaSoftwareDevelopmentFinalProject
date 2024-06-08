@@ -12,10 +12,11 @@ import javax.imageio.ImageIO;
 import entity.Entity;
 
 public class UI {
+
     GamePanel gp;
     Graphics2D g2d;
+    Font silver;
     BufferedImage menuBackGround;
-    Font hanyiSentyCrayon, silver;
 
     public int slotCol = 0;
     public int slotRow = 0;
@@ -37,8 +38,6 @@ public class UI {
 
         try {
             menuBackGround = ImageIO.read(getClass().getResourceAsStream("/backGround/WorldMap.png"));
-            is = getClass().getResourceAsStream("/font/HanyiSentyCrayon.ttf");
-            hanyiSentyCrayon = Font.createFont(Font.TRUETYPE_FONT, is);
             is = getClass().getResourceAsStream("/font/Silver.ttf");
             silver = Font.createFont(Font.TRUETYPE_FONT, is);
         } catch (Exception e) {
@@ -65,30 +64,30 @@ public class UI {
             drawDialogueScreen();
         }
 
-        if (gp.gameState == gp.pauseState) {
-            drawPauseScreen();
-        }
-
         if (gp.gameState == gp.gameOverState) {
             drawGameOverScreen();
+        }
+
+        if (gp.gameState == gp.gameClearState) {
+            drawGameClearScreen();
         }
     }
 
     public void drawMenuScreen() {
-        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 112f));
+        g2d.drawImage(menuBackGround, 0, 0, null);
+
         String text = "Dungeon Adventure";
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 112f));
         int x = getCenteredX(text);
         int y = gp.tileSize * 4;
-
-        g2d.drawImage(menuBackGround, 0, 0, null);
 
         g2d.setColor(Color.gray);
         g2d.drawString(text, x + 5, y + 5);
         g2d.setColor(Color.WHITE);
         g2d.drawString(text, x, y);
 
-        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 80f));
         text = "New Game";
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 80f));
         x = getCenteredX(text);
         y += gp.tileSize * 4;
         g2d.setColor(Color.gray);
@@ -138,7 +137,12 @@ public class UI {
 
         // DRAW PLAYER'S INVENTORY
         for (Entity obj : gp.player.inventory) {
-            g2d.drawImage(obj.itemImage1, slotX, slotY, null);
+            if (gp.player.hasArrow) {
+                g2d.drawImage(obj.itemImage1, slotX, slotY, null);
+            } else {
+                g2d.drawImage(obj.itemImage2, slotX, slotY, null);
+            }
+
             slotX += gp.tileSize + 20;
         }
 
@@ -162,30 +166,19 @@ public class UI {
         drawSubWindow(x, y, width, height);
 
         g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 40f));
-
         x += gp.tileSize;
         y += gp.tileSize;
         g2d.drawString(currentDialouge, x, y);
     }
 
-    public void drawPauseScreen() {
-        String text = "PAUSED";
-        g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 80f));
-        int length = (int) g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
-        int x = gp.screenWidth / 2 - length / 2;
-        int y = gp.screenHeight / 2;
-        g2d.drawString(text, x, y);
-    }
-
     public void drawGameOverScreen() {
+        int x, y;
+
         g2d.setColor(new Color(0, 0, 0, 150));
         g2d.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
-
-        int x, y;
-        String text = "Game Over";
-        g2d.setFont(silver);
         g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 112f));
 
+        String text = "Game Over";
         x = getCenteredX(text);
         y = gp.tileSize * 4;
         g2d.setColor(Color.black);
@@ -196,6 +189,46 @@ public class UI {
         g2d.setFont(g2d.getFont().deriveFont(80f));
 
         text = "Retry";
+        x = getCenteredX(text);
+        y += gp.tileSize * 4;
+        g2d.setColor(Color.black);
+        g2d.drawString(text, x, y);
+        g2d.setColor(Color.white);
+        g2d.drawString(text, x - 5, y - 5);
+        if (commandNum == 0) {
+            g2d.drawString(">", x - gp.tileSize, y);
+        }
+
+        text = "Quit";
+        x = getCenteredX(text);
+        y += gp.tileSize * 2;
+        g2d.setColor(Color.black);
+        g2d.drawString(text, x, y);
+        g2d.setColor(Color.white);
+        g2d.drawString(text, x - 5, y - 5);
+        if (commandNum == 1) {
+            g2d.drawString(">", x - gp.tileSize, y);
+        }
+    }
+
+    public void drawGameClearScreen() {
+        int x, y;
+
+        g2d.setColor(new Color(0, 0, 0, 150));
+        g2d.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 112f));
+
+        String text = "You win";
+        x = getCenteredX(text);
+        y = gp.tileSize * 4;
+        g2d.setColor(Color.black);
+        g2d.drawString(text, x, y);
+        g2d.setColor(Color.white);
+        g2d.drawString(text, x - 5, y - 5);
+
+        g2d.setFont(g2d.getFont().deriveFont(80f));
+
+        text = "Menu";
         x = getCenteredX(text);
         y += gp.tileSize * 4;
         g2d.setColor(Color.black);

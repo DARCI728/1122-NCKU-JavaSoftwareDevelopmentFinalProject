@@ -1,6 +1,5 @@
 package main;
 
-
 import javax.swing.JFrame;
 
 public class Main {
@@ -10,14 +9,13 @@ public class Main {
         window.setResizable(false);
         window.setTitle("Dungeon Adventure");
 
-        GamePanel gamePanel = new GamePanel();
-        window.add(gamePanel);
-
+        GamePanel gp = new GamePanel();
+        window.add(gp);
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
-        gamePanel.setUpGame();
-        gamePanel.startGameThread();
+        gp.setUpGame();
+        gp.startGameThread();
     }
 }

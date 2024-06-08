@@ -33,6 +33,7 @@ public class OBJ_Arrow extends Projectile {
     }
 
     public void draw(Graphics2D g2d) {
+        
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 
         BufferedImage image = null;

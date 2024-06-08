@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import javax.swing.JPanel;
 
 import entity.*;
@@ -42,7 +40,6 @@ public class GamePanel extends JPanel implements Runnable {
     public ArrayList<Entity> obj = new ArrayList<Entity>();
     public ArrayList<Entity> projectile = new ArrayList<Entity>();
     public Entity mob[] = new Entity[10];
-    ArrayList<Entity> entityList = new ArrayList<Entity>();
 
     // Maps
     public final int maxMap = 10;
@@ -55,6 +52,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int dialogueState = 2;
     public final int pauseState = 3;
     public final int gameOverState = 4;
+    public final int gameClearState = 5;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -68,13 +66,15 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setMonster();
         aSetter.setObject();
         envM.setUpEnvironment();
+        player.setDefaultValue();
         gameState = menuState;
+        currentMap = 0;
+        retry();
     }
 
     public void retry() {
         obj.clear();
         mob = new Entity[10];
-        entityList.clear();
         aSetter.setMonster();
         aSetter.setObject();
         eventH = new EventHander(this);
@@ -120,9 +120,14 @@ public class GamePanel extends JPanel implements Runnable {
                 for (int i = 0; i < projectile.size(); i++) {
                     if (projectile.get(i).alive) {
                         projectile.get(i).update();
-                        ;
                     } else {
                         projectile.remove(i);
+                    }
+                }
+
+                for (int i = 0; i < obj.size(); i++) {
+                    if (obj.get(i).name == "Portal") {
+                        obj.get(i).update();
                     }
                 }
 
@@ -152,6 +157,18 @@ public class GamePanel extends JPanel implements Runnable {
                             tileM.tiles[1][96].collision = false;
                             break;
 
+                        case 2:
+                            tileM.tiles[2][45].collision = false;
+                            break;
+
+                        case 3:
+                            tileM.tiles[3][76].collision = false;
+                            break;
+
+                        case 4:
+                            tileM.tiles[4][114].collision = false;
+                            break;
+
                         default:
                             break;
                     }
@@ -163,6 +180,18 @@ public class GamePanel extends JPanel implements Runnable {
 
                         case 1:
                             tileM.tiles[1][96].collision = true;
+                            break;
+
+                        case 2:
+                            tileM.tiles[2][45].collision = true;
+                            break;
+
+                        case 3:
+                            tileM.tiles[3][76].collision = true;
+                            break;
+
+                        case 4:
+                            tileM.tiles[4][114].collision = true;
                             break;
 
                         default:
@@ -184,39 +213,21 @@ public class GamePanel extends JPanel implements Runnable {
         if (gameState != menuState) {
             tileM.draw(g2d, currentMap);
 
-            entityList.add(player);
-
             for (int i = 0; i < obj.size(); i++) {
-                if (obj.get(i) != null) {
-                    entityList.add(obj.get(i));
-                }
+                obj.get(i).draw(g2d);
             }
 
             for (int i = 0; i < projectile.size(); i++) {
-                if (projectile.get(i) != null) {
-                    entityList.add(projectile.get(i));
-                }
+                projectile.get(i).draw(g2d);
             }
 
             for (int i = 0; i < 10; i++) {
                 if (mob[i] != null) {
-                    entityList.add(mob[i]);
+                    mob[i].draw(g2d);
                 }
             }
 
-            Collections.sort(entityList, new Comparator<Entity>() {
-
-                public int compare(Entity e1, Entity e2) {
-                    int result = Integer.compare(e1.worldY, e2.worldY);
-                    return result;
-                }
-            });
-
-            for (int i = 0; i < entityList.size(); i++) {
-                entityList.get(i).draw(g2d);
-            }
-
-            entityList.clear();
+            player.draw(g2d);
 
             envM.draw(g2d);
         }

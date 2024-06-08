@@ -12,7 +12,6 @@ import main.UtilityTool;
 public class Entity {
     public GamePanel gp;
     public String name;
-    public String type;
     public int worldX, worldY;
 
     // Collision
@@ -23,11 +22,11 @@ public class Entity {
     // Player
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public BufferedImage atkUp1, atkUp2, atkDown1, atkDown2, atkLeft1, atkLeft2, atkRight1, attackRight2;
-    public Rectangle atkArea = new Rectangle(0, 0, 0, 0);
+    public Rectangle atkArea = new Rectangle(12, 12, 24, 24);
     public String direction = "down";
     public int maxLife;
     public int life;
-    public int speed = 4;
+    public int speed;
     public int spriteCounter = 0;
     public int spriteNun = 1;
     public boolean moving = false;
@@ -44,7 +43,7 @@ public class Entity {
     public boolean invincible = false;
 
     // Objects
-    public BufferedImage itemImage1, itemImage2;
+    public BufferedImage itemImage1, itemImage2, itemImage3;
 
     public Entity(GamePanel gp) {
         this.gp = gp;

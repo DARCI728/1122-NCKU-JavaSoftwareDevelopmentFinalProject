@@ -10,5 +10,6 @@ public class OBJ_Gloves extends Entity {
 
         name = "Gloves";
         itemImage1 = getImage("/objects/gloves.png", gp.tileSize, gp.tileSize);
+        itemImage2 = itemImage1;
     }
 }

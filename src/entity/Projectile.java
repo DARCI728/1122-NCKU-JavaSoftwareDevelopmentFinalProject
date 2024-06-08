@@ -7,6 +7,8 @@ public class Projectile extends Entity {
 
     Entity user;
 
+    int initialCol, initialRow;
+
     public Projectile(GamePanel gp) {
         super(gp);
     }
@@ -17,13 +19,23 @@ public class Projectile extends Entity {
         this.direction = direction;
         this.alive = alive;
         this.user = user;
+        initialCol = worldX / gp.tileSize;
+        initialRow = worldY / gp.tileSize;
     }
 
     public void update() {
 
         int objIndex = gp.cChecker.checkObject(this, true);
 
+        int objCol = -1;
+        int objRow = -1;
+
         if (objIndex != -1) {
+            objCol = gp.obj.get(objIndex).worldX / gp.tileSize;
+            objRow = gp.obj.get(objIndex).worldY / gp.tileSize;
+        }
+
+        if (objIndex != -1 && (initialCol != objCol || initialRow != objRow)) {
             Entity arrow = new OBJ_Arrow(gp);
             switch (direction) {
                 case "up":

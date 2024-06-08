@@ -14,8 +14,12 @@ public class Player extends Entity {
 
     KeyHandler keyH;
 
-    int stopX = -1, stopY = -1;
-    public boolean hasArrow;
+    public int stopX = -1, stopY = -1;
+    public int teleportCnt = 0;
+    public boolean hasSword = false;
+    public boolean hasArrow = false;
+    public boolean hasSat = false;
+    public boolean hasteleported = false;
 
     public ArrayList<Entity> inventory = new ArrayList<Entity>();
 
@@ -24,6 +28,8 @@ public class Player extends Entity {
         this.keyH = keyH;
 
         maxLife = 1;
+
+        speed = 4;
 
         solidArea = new Rectangle(2, 2, 44, 44);
         solidAreaDefaultX = solidArea.x;
@@ -71,6 +77,9 @@ public class Player extends Entity {
         life = maxLife;
         direction = "down";
         hasArrow = false;
+        hasSword = false;
+        hasSat = false;
+        hasteleported = false;
         inventory.clear();
         inventory.add(new OBJ_Gloves(gp));
         projectile = new OBJ_Arrow(gp);
@@ -84,6 +93,21 @@ public class Player extends Entity {
             case 1:
                 worldX = gp.tileSize * 11;
                 worldY = gp.tileSize * 10;
+                break;
+
+            case 2:
+                worldX = gp.tileSize * 5;
+                worldY = gp.tileSize * 8;
+                break;
+
+            case 3:
+                worldX = gp.tileSize * 6;
+                worldY = gp.tileSize * 5;
+                break;
+
+            case 4:
+                worldX = gp.tileSize * 3;
+                worldY = gp.tileSize * 4;
                 break;
 
             default:
@@ -101,12 +125,16 @@ public class Player extends Entity {
             shooting = false;
         }
 
-        if (attacking) {
+        if (attacking && hasSword) {
             attacking();
         }
 
         if (shooting && hasArrow) {
             shooting();
+        }
+
+        if (hasteleported) {
+            teleportCnt++;
         }
 
         if ((keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) || moving) {
@@ -135,11 +163,26 @@ public class Player extends Entity {
             // CHECK OBJ COLLISION
             int objIndex = gp.cChecker.checkObject(this, true);
 
-            if (objIndex != -1) {
+            if (objIndex != -1 && hasSat == false && hasteleported == false) {
                 pickUpObject(objIndex);
-                stopX = gp.obj.get(objIndex).worldX;
-                stopY = gp.obj.get(objIndex).worldY;
-                gp.obj.remove(objIndex);
+
+                if (gp.obj.get(objIndex).name != "Portal") {
+                    stopX = gp.obj.get(objIndex).worldX;
+                    stopY = gp.obj.get(objIndex).worldY;
+                }
+
+                if (gp.obj.get(objIndex).name != "Chair" && gp.obj.get(objIndex).name != "Portal") {
+                    gp.obj.remove(objIndex);
+                }
+            } else if (objIndex != -1
+                    && gp.obj.get(objIndex).name != "Chair"
+                    && gp.obj.get(objIndex).name != "Portal") {
+                pickUpObject(objIndex);
+                hasSat = false;
+            } else if (objIndex == -1) {
+                hasSat = false;
+                hasteleported = false;
+                teleportCnt = 0;
             }
 
             // CHECK MOB COLLISION
@@ -184,7 +227,7 @@ public class Player extends Entity {
                 }
             }
 
-            if (collisionOn == false) {
+            if (collisionOn == false && ((hasteleported && teleportCnt >= 10) || !hasteleported)) {
                 switch (direction) {
                     case "up":
                         worldY -= speed;
@@ -297,6 +340,7 @@ public class Player extends Entity {
 
         switch (objectName) {
             case "Sword":
+                hasSword = true;
                 if (inventory.size() == 1) {
                     inventory.add(new OBJ_Sword(gp));
                 } else {
@@ -316,6 +360,17 @@ public class Player extends Entity {
 
             case "Arrow":
                 hasArrow = true;
+                break;
+
+            case "Chair":
+                hasSat = true;
+                break;
+
+            case "Portal":
+                hasteleported = true;
+                moving = false;
+                gp.eventH.teleport(gp.playState, gp.obj.get(i).worldX / gp.tileSize,
+                        gp.obj.get(i).worldY / gp.tileSize);
                 break;
 
             default:
