@@ -118,6 +118,8 @@ public class Player extends Entity {
     public void update() {
         if (life <= 0) {
             gp.gameState = gp.gameOverState;
+            gp.stopMusic();
+            gp.platSE(2);
         }
 
         if (moving) {
@@ -255,8 +257,10 @@ public class Player extends Entity {
             spriteCounter++;
             if (spriteCounter >= 12) {
                 if (spriteNun == 1) {
+                    gp.platSE(7);
                     spriteNun = 2;
                 } else if (spriteNun == 2) {
+                    gp.platSE(8);
                     spriteNun = 1;
                 }
                 spriteCounter = 0;
@@ -269,6 +273,10 @@ public class Player extends Entity {
 
         if (spriteCounter <= 5) {
             spriteNun = 1;
+        }
+
+        if (spriteCounter == 5) {
+            gp.platSE(10);
         }
 
         if (spriteCounter > 5 && spriteCounter <= 25) {
@@ -317,6 +325,7 @@ public class Player extends Entity {
     }
 
     public void shooting() {
+        gp.platSE(11);
         projectile.set(worldX, worldY, direction, true, this);
         gp.projectile.add(projectile);
         hasArrow = false;
@@ -328,6 +337,8 @@ public class Player extends Entity {
             if (gp.mob[i].invincible == false) {
                 gp.mob[i].invincible = true;
                 gp.mob[i].life -= 1;
+
+                gp.platSE(1);
 
                 if (gp.mob[i].life <= 0) {
                     gp.mob[i].dying = true;
@@ -342,6 +353,7 @@ public class Player extends Entity {
         switch (objectName) {
             case "Sword":
                 hasSword = true;
+                gp.platSE(9);
                 if (inventory.size() == 1) {
                     inventory.add(new OBJ_Sword(gp));
                 } else {
@@ -351,6 +363,7 @@ public class Player extends Entity {
 
             case "Bow":
                 hasArrow = true;
+                gp.platSE(9);
                 if (inventory.size() == 1) {
                     inventory.add(new OBJ_Null(gp));
                     inventory.add(new OBJ_Bow(gp));
@@ -360,6 +373,7 @@ public class Player extends Entity {
                 break;
 
             case "Arrow":
+                gp.platSE(9);
                 hasArrow = true;
                 break;
 

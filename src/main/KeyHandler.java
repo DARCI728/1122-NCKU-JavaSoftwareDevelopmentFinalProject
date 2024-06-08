@@ -59,6 +59,7 @@ public class KeyHandler implements KeyListener {
 
     public void menuState(int code) {
         if (code == KeyEvent.VK_W) {
+            gp.platSE(3);
             gp.ui.commandNum--;
             if (gp.ui.commandNum < 0) {
                 gp.ui.commandNum = 2;
@@ -66,6 +67,7 @@ public class KeyHandler implements KeyListener {
         }
 
         if (code == KeyEvent.VK_S) {
+            gp.platSE(3);
             gp.ui.commandNum++;
             if (gp.ui.commandNum > 2) {
                 gp.ui.commandNum = 0;
@@ -76,6 +78,8 @@ public class KeyHandler implements KeyListener {
             switch (gp.ui.commandNum) {
                 case 0:
                     gp.gameState = gp.playState;
+                    gp.stopMusic();
+                    gp.playMusic(4);
                     break;
 
                 case 1:
@@ -202,14 +206,17 @@ public class KeyHandler implements KeyListener {
         }
 
         if (code == KeyEvent.VK_1) {
+            gp.platSE(3);
             gp.ui.slotCol = 0;
         }
 
         if (code == KeyEvent.VK_2) {
+            gp.platSE(3);
             gp.ui.slotCol = 1;
         }
 
         if (code == KeyEvent.VK_3) {
+            gp.platSE(3);
             gp.ui.slotCol = 2;
         }
 
@@ -221,12 +228,14 @@ public class KeyHandler implements KeyListener {
 
     public void dialogueState(int code) {
         if (code == KeyEvent.VK_ENTER) {
+            gp.platSE(5);
             gp.gameState = gp.playState;
         }
     }
 
     public void gameOverState(int code) {
         if (code == KeyEvent.VK_W) {
+            gp.platSE(3);
             gp.ui.commandNum--;
             if (gp.ui.commandNum < 0) {
                 gp.ui.commandNum = 1;
@@ -234,6 +243,7 @@ public class KeyHandler implements KeyListener {
         }
 
         if (code == KeyEvent.VK_S) {
+            gp.platSE(3);
             gp.ui.commandNum++;
             if (gp.ui.commandNum > 1) {
                 gp.ui.commandNum = 0;
@@ -244,6 +254,7 @@ public class KeyHandler implements KeyListener {
             switch (gp.ui.commandNum) {
                 case 0:
                     gp.retry();
+                    gp.playMusic(4);
                     gp.gameState = gp.playState;
                     break;
 
@@ -259,6 +270,7 @@ public class KeyHandler implements KeyListener {
 
     public void gameClearState(int code) {
         if (code == KeyEvent.VK_W) {
+            gp.platSE(3);
             gp.ui.commandNum--;
             if (gp.ui.commandNum < 0) {
                 gp.ui.commandNum = 1;
@@ -266,6 +278,7 @@ public class KeyHandler implements KeyListener {
         }
 
         if (code == KeyEvent.VK_S) {
+            gp.platSE(3);
             gp.ui.commandNum++;
             if (gp.ui.commandNum > 1) {
                 gp.ui.commandNum = 0;

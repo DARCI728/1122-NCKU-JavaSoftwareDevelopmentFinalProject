@@ -33,6 +33,8 @@ public class GamePanel extends JPanel implements Runnable {
     public CollisionChecker cChecker = new CollisionChecker(this);
     public EventHander eventH = new EventHander(this);
     public KeyHandler keyH = new KeyHandler(this);
+    public Sound music = new Sound();
+    public Sound sound = new Sound();
     public UI ui = new UI(this);
 
     // Entity
@@ -69,6 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
         player.setDefaultValue();
         gameState = menuState;
         currentMap = 0;
+        playMusic(0);
         retry();
     }
 
@@ -235,5 +238,56 @@ public class GamePanel extends JPanel implements Runnable {
         ui.draw(g2d);
 
         g2d.dispose();
+    }
+
+    public void playMusic(int i) {
+        music.setFile(i);
+        music.setVolume(-25f);
+        music.play();
+        music.loop();
+    }
+
+    public void stopMusic() {
+        music.stop();
+    }
+
+    public void platSE(int i) {
+        sound.setFile(i);
+
+        switch (i) {
+            case 6:
+                sound.setVolume(-25f);
+                break;
+
+            case 7:
+                sound.setVolume(-30f);
+                break;
+
+            case 8:
+                sound.setVolume(-30f);
+                break;
+
+            case 9:
+                sound.setVolume(-25f);
+                break;
+
+            case 10:
+                sound.setVolume(-30f);
+                break;
+
+            case 11:
+                sound.setVolume(-30f);
+                break;
+
+            case 12:
+                sound.setVolume(-25f);
+                break;
+
+            default:
+                sound.setVolume(-10f);
+                break;
+        }
+
+        sound.play();
     }
 }

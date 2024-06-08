@@ -38,7 +38,7 @@ public class EventHander {
 
         switch (gp.currentMap) {
             case 0:
-                if (hit(entity, isPlayer, 0, 8, 5, "any")) {
+                if (hit(entity, isPlayer, true, 0, 8, 5, "any")) {
                     if (isPlayer) {
                         nextLevel(gp.dialogueState);
                     } else {
@@ -49,7 +49,7 @@ public class EventHander {
                 break;
 
             case 1:
-                if (hit(entity, isPlayer, 1, 9, 10, "any")) {
+                if (hit(entity, isPlayer, true, 1, 9, 10, "any")) {
                     if (isPlayer) {
                         trap(gp.dialogueState);
                     } else {
@@ -59,7 +59,7 @@ public class EventHander {
 
                 }
 
-                if (hit(entity, isPlayer, 1, 7, 9, "any")) {
+                if (hit(entity, isPlayer, true, 1, 7, 9, "any")) {
                     if (isPlayer) {
                         trap(gp.dialogueState);
                     } else {
@@ -68,7 +68,7 @@ public class EventHander {
                     }
                 }
 
-                if (hit(entity, isPlayer, 1, 11, 5, "any")) {
+                if (hit(entity, isPlayer, true, 1, 11, 5, "any")) {
                     if (isPlayer) {
                         nextLevel(gp.dialogueState);
                     } else {
@@ -79,7 +79,7 @@ public class EventHander {
                 break;
 
             case 2:
-                if (hit(entity, isPlayer, 2, 7, 10, "any")) {
+                if (hit(entity, isPlayer, true, 2, 7, 10, "any")) {
                     if (isPlayer) {
                         trap(gp.dialogueState);
                     } else {
@@ -88,7 +88,7 @@ public class EventHander {
                     }
                 }
 
-                if (hit(entity, isPlayer, 2, 11, 7, "any")) {
+                if (hit(entity, isPlayer, true, 2, 11, 7, "any")) {
                     if (isPlayer) {
                         trap(gp.dialogueState);
                     } else {
@@ -97,7 +97,7 @@ public class EventHander {
                     }
                 }
 
-                if (hit(entity, isPlayer, 2, 12, 4, "any")) {
+                if (hit(entity, isPlayer, true, 2, 12, 4, "any")) {
                     if (isPlayer) {
                         trap(gp.dialogueState);
                     } else {
@@ -106,7 +106,7 @@ public class EventHander {
                     }
                 }
 
-                if (hit(entity, isPlayer, 2, 11, 2, "any")) {
+                if (hit(entity, isPlayer, true, 2, 11, 2, "any")) {
                     if (isPlayer) {
                         nextLevel(gp.dialogueState);
                     } else {
@@ -117,7 +117,7 @@ public class EventHander {
                 break;
 
             case 3:
-                if (hit(entity, isPlayer, 0, 8, 4, "any")) {
+                if (hit(entity, isPlayer, true, 0, 8, 4, "any")) {
                     if (isPlayer) {
                         nextLevel(gp.dialogueState);
                     } else {
@@ -128,7 +128,7 @@ public class EventHander {
                 break;
 
             case 4:
-                if (hit(entity, isPlayer, 4, 3, 2, "any")) {
+                if (hit(entity, isPlayer, true, 4, 3, 2, "any")) {
                     if (isPlayer) {
                         trap(gp.dialogueState);
                     } else {
@@ -137,7 +137,7 @@ public class EventHander {
                     }
                 }
 
-                if (hit(entity, isPlayer, 4, 5, 4, "any")) {
+                if (hit(entity, isPlayer, true, 4, 5, 4, "any")) {
                     if (isPlayer) {
                         trap(gp.dialogueState);
                     } else {
@@ -146,21 +146,21 @@ public class EventHander {
                     }
                 }
 
-                if (hit(entity, isPlayer, 4, 4, 5, "any")) {
+                if (hit(entity, isPlayer, false, 4, 4, 5, "any")) {
                     if (!isPlayer) {
                         coordinate[0] = 4;
                         coordinate[1] = 5;
                     }
                 }
 
-                if (hit(entity, isPlayer, 4, 13, 10, "any")) {
+                if (hit(entity, isPlayer, false, 4, 13, 10, "any")) {
                     if (!isPlayer) {
                         coordinate[0] = 13;
                         coordinate[1] = 10;
                     }
                 }
 
-                if (hit(entity, isPlayer, 4, 12, 6, "any")) {
+                if (hit(entity, isPlayer, true, 4, 12, 6, "any")) {
                     if (isPlayer) {
                         nextLevel(gp.dialogueState);
                     } else {
@@ -177,7 +177,8 @@ public class EventHander {
         return coordinate;
     }
 
-    public boolean hit(Entity entity, boolean isPlayer, int mapNum, int col, int row, String reqDirection) {
+    public boolean hit(Entity entity, boolean isPlayer, boolean oneDoneEvent, int mapNum, int col, int row,
+            String reqDirection) {
         boolean hit = false;
 
         entity.solidArea.x = entity.worldX + entity.solidArea.x;
@@ -188,10 +189,8 @@ public class EventHander {
         if (entity.solidArea.intersects(eventRect[mapNum][col][row])) {
             if (entity.direction.contentEquals(reqDirection)
                     || reqDirection.contentEquals("any") && eventRect[mapNum][col][row].eventDone == false) {
-                if (isPlayer) {
-                    if ((col != 13 && row != 10) && (col != 4 && row != 5)) {
-                        eventRect[mapNum][col][row].eventDone = true;
-                    }
+                if (isPlayer && oneDoneEvent) {
+                    eventRect[mapNum][col][row].eventDone = true;
                 }
                 hit = true;
             }
@@ -216,6 +215,8 @@ public class EventHander {
 
         gp.player.hasteleported = true;
 
+        gp.platSE(6);
+
         if (col == 4 && row == 5) {
             gp.player.worldX = gp.tileSize * 13;
             gp.player.worldY = gp.tileSize * 10;
@@ -238,6 +239,8 @@ public class EventHander {
             gp.retry();
         } else {
             gp.gameState = gp.gameClearState;
+            gp.stopMusic();
+            gp.platSE(12);
         }
     }
 }
