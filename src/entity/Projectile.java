@@ -8,6 +8,8 @@ public class Projectile extends Entity {
     Entity user;
 
     int initialCol, initialRow;
+    int initialObjCol, initialObjRow;
+    public boolean hasCheckObj;
 
     public Projectile(GamePanel gp) {
         super(gp);
@@ -21,21 +23,22 @@ public class Projectile extends Entity {
         this.user = user;
         initialCol = worldX / gp.tileSize;
         initialRow = worldY / gp.tileSize;
+        initialObjCol = -1;
+        initialObjRow = -1;
+        hasCheckObj = false;
     }
 
     public void update() {
 
         int objIndex = gp.cChecker.checkObject(this, true);
 
-        int objCol = -1;
-        int objRow = -1;
-
-        if (objIndex != -1) {
-            objCol = gp.obj.get(objIndex).worldX / gp.tileSize;
-            objRow = gp.obj.get(objIndex).worldY / gp.tileSize;
+        if (objIndex != -1 && hasCheckObj == false) {
+            initialObjCol = gp.obj.get(objIndex).worldX / gp.tileSize;
+            initialObjRow = gp.obj.get(objIndex).worldY / gp.tileSize;
+            hasCheckObj = true;
         }
 
-        if (objIndex != -1 && (initialCol != objCol || initialRow != objRow)) {
+        if (objIndex != -1 && !(initialCol == initialObjCol && initialRow == initialObjRow)) {
             Entity arrow = new OBJ_Arrow(gp);
             switch (direction) {
                 case "up":
@@ -81,7 +84,7 @@ public class Projectile extends Entity {
         int coordinate[] = new int[2];
         coordinate = gp.eventH.checkEvent(this, false);
 
-        if (coordinate[0] > 0 && coordinate[1] > 0) {
+        if (coordinate[0] > 0 && coordinate[1] > 0 && !(initialCol == initialObjCol && initialRow == initialObjRow)) {
             Entity arrow = new OBJ_Arrow(gp);
             switch (direction) {
                 case "up":

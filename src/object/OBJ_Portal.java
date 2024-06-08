@@ -19,7 +19,7 @@ public class OBJ_Portal extends Entity {
         itemImage2 = getImage("/objects/portal_2.png", gp.tileSize, gp.tileSize);
         itemImage2 = getImage("/objects/portal_3.png", gp.tileSize, gp.tileSize);
 
-        solidArea = new Rectangle(0, 0, 48, 48);
+        solidArea = new Rectangle(2, 2, 44, 44);
         solidAreaDefaultX = 0;
         solidAreaDefaultY = 0;
 

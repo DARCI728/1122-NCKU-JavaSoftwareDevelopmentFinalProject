@@ -178,6 +178,7 @@ public class Player extends Entity {
                     && gp.obj.get(objIndex).name != "Chair"
                     && gp.obj.get(objIndex).name != "Portal") {
                 pickUpObject(objIndex);
+                gp.obj.remove(objIndex);
                 hasSat = false;
             } else if (objIndex == -1) {
                 hasSat = false;
