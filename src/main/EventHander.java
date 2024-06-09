@@ -217,6 +217,8 @@ public class EventHander {
 
         gp.platSE(6);
 
+        gp.steps++;
+
         if (col == 4 && row == 5) {
             gp.player.worldX = gp.tileSize * 13;
             gp.player.worldY = gp.tileSize * 10;
@@ -234,6 +236,10 @@ public class EventHander {
     public void nextLevel(int gameState) {
         gp.ui.currentDialouge = "Go to next level!";
         gp.gameState = gameState;
+
+        gp.steps++;
+        gp.totalSteps += gp.steps;
+        
         if (gp.currentMap + 1 <= 4) {
             gp.currentMap++;
             gp.retry();

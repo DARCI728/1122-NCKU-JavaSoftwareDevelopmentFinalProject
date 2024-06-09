@@ -33,12 +33,12 @@ public class Lighting {
 
         screenArea.subtract(lightArea);
 
-        Color color[] = new Color[5];
-        float fraction[] = new float[5];
+        Color color[] = new Color[9];
+        float fraction[] = new float[9];
 
-        for (int i = 0; i < 5; i++) {
-            color[i] = new Color(0, 0, 0, 0.24f * i);
-            fraction[i] = 0.25f * i;
+        for (int i = 0; i < 9; i++) {
+            color[i] = new Color(0, 0, 0, 0.11f * i);
+            fraction[i] = 0.125f * i;
         }
 
         RadialGradientPaint paint = new RadialGradientPaint(centerX, centerY, circleSize / 2, fraction, color);

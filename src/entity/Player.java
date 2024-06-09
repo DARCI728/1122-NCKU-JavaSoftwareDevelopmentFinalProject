@@ -20,6 +20,7 @@ public class Player extends Entity {
     public boolean hasArrow = false;
     public boolean hasSat = false;
     public boolean hasteleported = false;
+    public boolean killedMob = false;
 
     public ArrayList<Entity> inventory = new ArrayList<Entity>();
 
@@ -35,7 +36,7 @@ public class Player extends Entity {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
-        atkArea = new Rectangle(0, 0, 48, 48);
+        atkArea = new Rectangle(12, 12, 24, 24);
 
         getPlayerImage();
         getPlayerAttackImage();
@@ -250,8 +251,13 @@ public class Player extends Entity {
                 }
             } else {
                 moving = false;
+
                 stopX = -1;
                 stopY = -1;
+
+                if (!hasteleported) {
+                    gp.steps++;
+                }
             }
 
             spriteCounter++;
@@ -320,12 +326,19 @@ public class Player extends Entity {
         if (spriteCounter > 25) {
             spriteNun = 1;
             spriteCounter = 0;
+
+            if (killedMob) {
+                gp.steps++;
+                killedMob = false;
+            }
+
             attacking = false;
         }
     }
 
     public void shooting() {
         gp.platSE(11);
+        gp.steps++;
         projectile.set(worldX, worldY, direction, true, this);
         gp.projectile.add(projectile);
         hasArrow = false;
@@ -339,6 +352,8 @@ public class Player extends Entity {
                 gp.mob[i].life -= 1;
 
                 gp.platSE(1);
+
+                killedMob = true;
 
                 if (gp.mob[i].life <= 0) {
                     gp.mob[i].dying = true;
@@ -401,6 +416,7 @@ public class Player extends Entity {
 
         if (this.solidArea.intersects(arrow.solidArea)) {
             gp.obj.remove(arrow);
+            gp.steps--;
             hasArrow = true;
         }
 

@@ -22,7 +22,7 @@ public class Entity {
     // Player
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public BufferedImage atkUp1, atkUp2, atkDown1, atkDown2, atkLeft1, atkLeft2, atkRight1, attackRight2;
-    public Rectangle atkArea = new Rectangle(12, 12, 24, 24);
+    public Rectangle atkArea = new Rectangle(0, 0, 12, 12);
     public String direction = "down";
     public int maxLife;
     public int life;

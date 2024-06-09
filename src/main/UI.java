@@ -58,6 +58,7 @@ public class UI {
 
         if (gp.gameState == gp.playState) {
             drawInventoryScreen();
+            drawStepsCounter();
         }
 
         if (gp.gameState == gp.dialogueState) {
@@ -158,6 +159,63 @@ public class UI {
         g2d.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
     }
 
+    public void drawStepsCounter() {
+        String text = "";
+
+        g2d.setColor(Color.WHITE);
+
+        switch (gp.currentMap) {
+            case 0:
+                text = "Steps count: " + gp.steps + "/7";
+
+                if (gp.steps >= 7) {
+                    g2d.setColor(Color.RED);
+                }
+                break;
+
+            case 1:
+                text = "Steps count: " + gp.steps + "/16";
+
+                if (gp.steps >= 16) {
+                    g2d.setColor(Color.RED);
+                }
+                break;
+
+            case 2:
+                text = "Steps count: " + gp.steps + "/24";
+
+                if (gp.steps >= 24) {
+                    g2d.setColor(Color.RED);
+                }
+                break;
+
+            case 3:
+                text = "Steps count: " + gp.steps + "/13";
+
+                if (gp.steps >= 13) {
+                    g2d.setColor(Color.RED);
+                }
+                break;
+
+            case 4:
+                text = "Steps count: " + gp.steps + "/16";
+
+                if (gp.steps >= 16) {
+                    g2d.setColor(Color.RED);
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN, 48f));
+        int length = (int) g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
+        int x = gp.tileSize * 17 - length;
+        int y = gp.tileSize * 1;
+        g2d.drawString(text, x, y);
+    }
+
     public void drawDialogueScreen() {
         int x = gp.tileSize * 2;
         int y = gp.tileSize * 1;
@@ -212,7 +270,8 @@ public class UI {
     }
 
     public void drawGameClearScreen() {
-        int x, y;
+        int x;
+        float y;
 
         g2d.setColor(new Color(0, 0, 0, 150));
         g2d.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
@@ -228,9 +287,17 @@ public class UI {
 
         g2d.setFont(g2d.getFont().deriveFont(80f));
 
+        text = "Total steps: " + gp.totalSteps;
+        x = getCenteredX(text);
+        y += gp.tileSize * 2.5f;
+        g2d.setColor(Color.black);
+        g2d.drawString(text, x, y);
+        g2d.setColor(Color.white);
+        g2d.drawString(text, x - 5, y - 5);
+
         text = "Menu";
         x = getCenteredX(text);
-        y += gp.tileSize * 4;
+        y += gp.tileSize * 2.5f;
         g2d.setColor(Color.black);
         g2d.drawString(text, x, y);
         g2d.setColor(Color.white);

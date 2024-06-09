@@ -43,6 +43,10 @@ public class GamePanel extends JPanel implements Runnable {
     public ArrayList<Entity> projectile = new ArrayList<Entity>();
     public Entity mob[] = new Entity[10];
 
+    // Steps
+    public int steps = 0;
+    public int totalSteps = 0;
+
     // Maps
     public final int maxMap = 10;
     public int currentMap = 0;
@@ -70,7 +74,8 @@ public class GamePanel extends JPanel implements Runnable {
         envM.setUpEnvironment();
         player.setDefaultValue();
         gameState = menuState;
-        currentMap = 0;
+        currentMap = 4;
+        totalSteps = 0;
         playMusic(0);
         retry();
     }
@@ -82,6 +87,7 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setObject();
         eventH = new EventHander(this);
         player = new Player(this, keyH);
+        steps = 0;
     }
 
     public void startGameThread() {
