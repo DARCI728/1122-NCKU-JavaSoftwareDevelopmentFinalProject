@@ -74,7 +74,7 @@ public class GamePanel extends JPanel implements Runnable {
         envM.setUpEnvironment();
         player.setDefaultValue();
         gameState = menuState;
-        currentMap = 4;
+        currentMap = 0;
         totalSteps = 0;
         playMusic(0);
         retry();
