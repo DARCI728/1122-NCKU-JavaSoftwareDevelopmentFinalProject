@@ -122,8 +122,10 @@ public class Player extends Entity {
             default:
                 break;
         }
+
         saveState();
     }
+
     public void saveState() {
         List<Entity> inventoryCopy = new ArrayList<>(inventory);
         List<MonsterState> monstersCopy = new ArrayList<>();
@@ -289,6 +291,7 @@ public class Player extends Entity {
             }
         }
     }
+    
     public void update() {
         if (life <= 0) {
             gp.gameState = gp.gameOverState;

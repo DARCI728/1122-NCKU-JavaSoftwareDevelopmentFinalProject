@@ -1,8 +1,6 @@
 package entity;
 
 import java.util.List;
-
-
 public class PlayerState {
     public int worldX, worldY;
     public String direction;
