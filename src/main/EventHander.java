@@ -142,7 +142,7 @@ public class EventHander {
                         trap(gp.dialogueState);
                     } else {
                         coordinate[0] = 5;
-                        coordinate[1] = 4;
+                        coordinate[1] = 3;
                     }
                 }
 
