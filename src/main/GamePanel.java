@@ -125,7 +125,7 @@ public class GamePanel extends JPanel implements Runnable {
         switch (gameState) {
             case playState:
                 player.update();
-
+                
                 for (int i = 0; i < projectile.size(); i++) {
                     if (projectile.get(i).alive) {
                         projectile.get(i).update();
@@ -206,6 +206,10 @@ public class GamePanel extends JPanel implements Runnable {
                         default:
                             break;
                     }
+                }
+                if (keyH.undoPressed) {
+                    player.undoMove();
+                    keyH.undoPressed = false;
                 }
 
                 break;
