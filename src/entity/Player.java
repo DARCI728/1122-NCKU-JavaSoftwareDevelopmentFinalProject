@@ -151,7 +151,8 @@ public class Player extends Entity {
                     } else if (mob instanceof MOB_Skeleton) {
                         type = "MOB_Skeleton";
                     }
-                    monstersCopy.add(new MonsterState(mob.worldX, mob.worldY, mob.life, mob.alive, mob.invincible, mob.dying, type));
+                    monstersCopy.add(new MonsterState(mob.worldX, mob.worldY, mob.life, mob.alive, mob.invincible,
+                            mob.dying, type));
                 }
             }
         }
@@ -184,13 +185,13 @@ public class Player extends Entity {
         }
 
         PlayerState newState = new PlayerState(worldX, worldY, direction, inventoryCopy, monstersCopy, objectsCopy,
-            projectilesCopy, attacking, shooting, gp.steps, gp.ui.slotCol, hasteleported, hasArrow);
+                projectilesCopy, attacking, shooting, gp.steps, gp.ui.slotCol, hasteleported, hasArrow);
         stateHistory.add(newState);
     }
 
     public void undoMove() {
         if (stateHistory.size() > 1) {
-            stateHistory.remove(stateHistory.size() - 1); 
+            stateHistory.remove(stateHistory.size() - 1);
             PlayerState lastState = stateHistory.get(stateHistory.size() - 1);
             worldX = lastState.worldX;
             worldY = lastState.worldY;
@@ -206,7 +207,7 @@ public class Player extends Entity {
             if (gp.mob != null && gp.steps != 0) {
                 int i = 0;
                 while (i < gp.mob.length) {
-                    if(shooting == false){
+                    if (shooting == false) {
 
                     }
                     if (i < lastState.monsters.size()) {
@@ -236,7 +237,7 @@ public class Player extends Entity {
                                     break;
                             }
                         }
-            
+
                         gp.mob[i].worldX = monsterState.worldX;
                         gp.mob[i].worldY = monsterState.worldY;
                         gp.mob[i].life = monsterState.life;
@@ -254,7 +255,7 @@ public class Player extends Entity {
                 gp.retry();
             }
 
-            else{
+            else {
                 gp.projectile.clear();
                 for (ProjectileState projectileState : lastState.projectiles) {
                     Projectile arrow = new Projectile(gp);
@@ -273,7 +274,7 @@ public class Player extends Entity {
                             obj = new OBJ_Sword(gp);
                             break;
                         case "OBJ_Arrow":
-                            obj = new OBJ_Arrow(gp, direction); 
+                            obj = new OBJ_Arrow(gp, direction);
                             break;
                         case "OBJ_Chair":
                             obj = new OBJ_Chair(gp);
@@ -291,7 +292,7 @@ public class Player extends Entity {
             }
         }
     }
-    
+
     public void update() {
         if (life <= 0) {
             gp.gameState = gp.gameOverState;
