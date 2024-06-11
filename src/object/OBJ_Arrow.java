@@ -11,12 +11,13 @@ public class OBJ_Arrow extends Projectile {
 
     GamePanel gp;
 
-    public OBJ_Arrow(GamePanel gp) {
+    public OBJ_Arrow(GamePanel gp, String direction) {
         super(gp);
         this.gp = gp;
 
         name = "Arrow";
         speed = 8;
+        this.direction = direction;
 
         solidArea = new Rectangle(2, 2, 44, 44);
         solidAreaDefaultX = 0;
