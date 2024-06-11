@@ -5,9 +5,12 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import main.GamePanel;
 import main.KeyHandler;
+import monster.*;
 import object.*;
 
 public class Player extends Entity {
@@ -21,6 +24,9 @@ public class Player extends Entity {
     public boolean hasSat = false;
     public boolean hasteleported = false;
     public boolean killedMob = false;
+    public boolean teleportInProgress = false;
+
+    public List<PlayerState> stateHistory = new LinkedList<>();
 
     public ArrayList<Entity> inventory = new ArrayList<Entity>();
 
@@ -31,6 +37,7 @@ public class Player extends Entity {
         maxLife = 1;
 
         speed = 4;
+        teleportInProgress = false;
 
         solidArea = new Rectangle(2, 2, 44, 44);
         solidAreaDefaultX = solidArea.x;
@@ -41,6 +48,7 @@ public class Player extends Entity {
         getPlayerImage();
         getPlayerAttackImage();
         setDefaultValue();
+        saveState();
     }
 
     public void getPlayerImage() {
@@ -83,7 +91,7 @@ public class Player extends Entity {
         hasteleported = false;
         inventory.clear();
         inventory.add(new OBJ_Gloves(gp));
-        projectile = new OBJ_Arrow(gp);
+        projectile = new OBJ_Arrow(gp, direction);
 
         switch (gp.currentMap) {
             case 0:
@@ -114,8 +122,173 @@ public class Player extends Entity {
             default:
                 break;
         }
+        saveState();
+    }
+    public void saveState() {
+        List<Entity> inventoryCopy = new ArrayList<>(inventory);
+        List<MonsterState> monstersCopy = new ArrayList<>();
+        List<ObjectState> objectsCopy = new ArrayList<>();
+        List<ProjectileState> projectilesCopy = new ArrayList<>();
+
+        if (gp.mob != null) {
+            for (Entity mob : gp.mob) {
+                if (mob != null) {
+                    String type = "";
+                    if (mob instanceof MOB_Bat) {
+                        type = "MOB_Bat";
+                    } else if (mob instanceof MOB_Slime) {
+                        type = "MOB_Slime";
+                    } else if (mob instanceof MOB_Bull) {
+                        type = "MOB_Bull";
+                    } else if (mob instanceof MOB_Devil) {
+                        type = "MOB_Devil";
+                    } else if (mob instanceof MOB_Gargoyle) {
+                        type = "MOB_Gargoyle";
+                    } else if (mob instanceof MOB_Ghost) {
+                        type = "MOB_Ghost";
+                    } else if (mob instanceof MOB_Skeleton) {
+                        type = "MOB_Skeleton";
+                    }
+                    monstersCopy.add(new MonsterState(mob.worldX, mob.worldY, mob.life, mob.alive, mob.invincible, mob.dying, type));
+                }
+            }
+        }
+
+        if (gp.obj != null) {
+            for (Entity obj : gp.obj) {
+                String type = "";
+                if (obj instanceof OBJ_Bow) {
+                    type = "OBJ_Bow";
+                } else if (obj instanceof OBJ_Sword) {
+                    type = "OBJ_Sword";
+                } else if (obj instanceof OBJ_Arrow) {
+                    type = "OBJ_Arrow";
+                } else if (obj instanceof OBJ_Chair) {
+                    type = "OBJ_Chair";
+                } else if (obj instanceof OBJ_Portal) {
+                    type = "OBJ_Portal";
+                }
+                objectsCopy.add(new ObjectState(obj.worldX, obj.worldY, type, obj.direction));
+            }
+        }
+
+        if (gp.projectile != null) {
+            for (Entity arrow : gp.projectile) {
+                if (arrow instanceof Projectile) {
+                    Projectile p = (Projectile) arrow;
+                    projectilesCopy.add(new ProjectileState(p.alive));
+                }
+            }
+        }
+
+        PlayerState newState = new PlayerState(worldX, worldY, direction, inventoryCopy, monstersCopy, objectsCopy,
+            projectilesCopy, attacking, shooting, gp.steps, gp.ui.slotCol, hasteleported, hasArrow);
+        stateHistory.add(newState);
     }
 
+    public void undoMove() {
+        if (stateHistory.size() > 1) {
+            stateHistory.remove(stateHistory.size() - 1); 
+            PlayerState lastState = stateHistory.get(stateHistory.size() - 1);
+            worldX = lastState.worldX;
+            worldY = lastState.worldY;
+            direction = lastState.direction;
+            gp.steps = lastState.steps;
+            attacking = lastState.attacking;
+            shooting = lastState.shooting;
+            hasteleported = lastState.hasteleported;
+            hasArrow = lastState.hasArrow;
+            inventory = new ArrayList<>(lastState.inventory);
+            gp.ui.slotCol = lastState.slotCol;
+
+            if (gp.mob != null && gp.steps != 0) {
+                int i = 0;
+                while (i < gp.mob.length) {
+                    if(shooting == false){
+
+                    }
+                    if (i < lastState.monsters.size()) {
+                        MonsterState monsterState = lastState.monsters.get(i);
+                        if (gp.mob[i] == null) {
+                            switch (monsterState.type) {
+                                case "MOB_Bat":
+                                    gp.mob[i] = new MOB_Bat(gp);
+                                    break;
+                                case "MOB_Slime":
+                                    gp.mob[i] = new MOB_Slime(gp);
+                                    break;
+                                case "MOB_Bull":
+                                    gp.mob[i] = new MOB_Bull(gp);
+                                    break;
+                                case "MOB_Devil":
+                                    gp.mob[i] = new MOB_Devil(gp);
+                                    break;
+                                case "MOB_Gargoyle":
+                                    gp.mob[i] = new MOB_Gargoyle(gp);
+                                    break;
+                                case "MOB_Ghost":
+                                    gp.mob[i] = new MOB_Ghost(gp);
+                                    break;
+                                case "MOB_Skeleton":
+                                    gp.mob[i] = new MOB_Skeleton(gp);
+                                    break;
+                            }
+                        }
+            
+                        gp.mob[i].worldX = monsterState.worldX;
+                        gp.mob[i].worldY = monsterState.worldY;
+                        gp.mob[i].life = monsterState.life;
+                        gp.mob[i].alive = monsterState.alive;
+                        gp.mob[i].invincible = monsterState.invincible;
+                        gp.mob[i].dying = monsterState.dying;
+                    } else {
+                        gp.mob[i] = null;
+                    }
+                    i++;
+                }
+            }
+
+            if (gp.steps < 1) {
+                gp.retry();
+            }
+
+            else{
+                gp.projectile.clear();
+                for (ProjectileState projectileState : lastState.projectiles) {
+                    Projectile arrow = new Projectile(gp);
+                    arrow.alive = projectileState.alive;
+                    gp.projectile.add(arrow);
+                }
+
+                gp.obj.clear();
+                for (ObjectState objState : lastState.objects) {
+                    Entity obj = null;
+                    switch (objState.type) {
+                        case "OBJ_Bow":
+                            obj = new OBJ_Bow(gp);
+                            break;
+                        case "OBJ_Sword":
+                            obj = new OBJ_Sword(gp);
+                            break;
+                        case "OBJ_Arrow":
+                            obj = new OBJ_Arrow(gp, direction); 
+                            break;
+                        case "OBJ_Chair":
+                            obj = new OBJ_Chair(gp);
+                            break;
+                        case "OBJ_Portal":
+                            obj = new OBJ_Portal(gp);
+                            break;
+                    }
+                    if (obj != null) {
+                        obj.worldX = objState.worldX;
+                        obj.worldY = objState.worldY;
+                        gp.obj.add(obj);
+                    }
+                }
+            }
+        }
+    }
     public void update() {
         if (life <= 0) {
             gp.gameState = gp.gameOverState;
@@ -168,7 +341,6 @@ public class Player extends Entity {
 
             if (objIndex != -1 && hasSat == false && hasteleported == false) {
                 pickUpObject(objIndex);
-
                 if (gp.obj.get(objIndex).name != "Portal") {
                     stopX = gp.obj.get(objIndex).worldX;
                     stopY = gp.obj.get(objIndex).worldY;
@@ -188,7 +360,6 @@ public class Player extends Entity {
                 hasteleported = false;
                 teleportCnt = 0;
             }
-
             // CHECK MOB COLLISION
             gp.cChecker.checkEntity(this, gp.mob);
 
@@ -254,9 +425,9 @@ public class Player extends Entity {
 
                 stopX = -1;
                 stopY = -1;
-
                 if (!hasteleported) {
                     gp.steps++;
+                    saveState();
                 }
             }
 
@@ -271,6 +442,10 @@ public class Player extends Entity {
                 }
                 spriteCounter = 0;
             }
+        }
+        if (teleportInProgress && teleportCnt >= 10) {
+            teleportInProgress = false;
+            saveState();
         }
     }
 
@@ -330,6 +505,7 @@ public class Player extends Entity {
             if (killedMob) {
                 gp.steps++;
                 killedMob = false;
+                saveState();
             }
 
             attacking = false;
@@ -343,6 +519,7 @@ public class Player extends Entity {
         gp.projectile.add(projectile);
         hasArrow = false;
         shooting = false;
+        saveState();
     }
 
     public void damageMonster(int i) {
@@ -399,6 +576,7 @@ public class Player extends Entity {
             case "Portal":
                 hasteleported = true;
                 moving = false;
+                teleportInProgress = true;
                 gp.eventH.teleport(gp.playState, gp.obj.get(i).worldX / gp.tileSize,
                         gp.obj.get(i).worldY / gp.tileSize);
                 break;
@@ -418,6 +596,7 @@ public class Player extends Entity {
             gp.obj.remove(arrow);
             gp.steps--;
             hasArrow = true;
+            saveState();
         }
 
         this.solidArea.x = this.solidAreaDefaultX;
